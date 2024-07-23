@@ -1,275 +1,63 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Tables {% endblock %} 
+{% block title %} Tables {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
 
-  <div class="content">
+<div class="content">
     <div class="row">
-      <div class="col-md-12">
-        <div class="card ">
-          <div class="card-header">
-            <h4 class="card-title"> Simple Table</h4>
-          </div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table tablesorter " id="">
-                <thead class=" text-primary">
-                  <tr>
-                    <th>
-                      Name
-                    </th>
-                    <th>
-                      Country
-                    </th>
-                    <th>
-                      City
-                    </th>
-                    <th class="text-center">
-                      Salary
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      Dakota Rice
-                    </td>
-                    <td>
-                      Niger
-                    </td>
-                    <td>
-                      Oud-Turnhout
-                    </td>
-                    <td class="text-center">
-                      $36,738
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      Minerva Hooper
-                    </td>
-                    <td>
-                      Curaçao
-                    </td>
-                    <td>
-                      Sinaai-Waas
-                    </td>
-                    <td class="text-center">
-                      $23,789
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      Sage Rodriguez
-                    </td>
-                    <td>
-                      Netherlands
-                    </td>
-                    <td>
-                      Baileux
-                    </td>
-                    <td class="text-center">
-                      $56,142
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      Philip Chaney
-                    </td>
-                    <td>
-                      Korea, South
-                    </td>
-                    <td>
-                      Overland Park
-                    </td>
-                    <td class="text-center">
-                      $38,735
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      Doris Greene
-                    </td>
-                    <td>
-                      Malawi
-                    </td>
-                    <td>
-                      Feldkirchen in Kärnten
-                    </td>
-                    <td class="text-center">
-                      $63,542
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      Mason Porter
-                    </td>
-                    <td>
-                      Chile
-                    </td>
-                    <td>
-                      Gloucester
-                    </td>
-                    <td class="text-center">
-                      $78,615
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      Jon Porter
-                    </td>
-                    <td>
-                      Portugal
-                    </td>
-                    <td>
-                      Gloucester
-                    </td>
-                    <td class="text-center">
-                      $98,615
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+        <div class="col-md-12">
+            <h2> 账户设置 </h2>
+            <div class="card ">
+                <div class="card-header">
+                    <h4 class="card-title"> 基本信息</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-sm-3 info-label">用户名:</div>
+                        <div class="col-sm-9">{{ user_info.username }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3 info-label">上次运行日期:</div>
+                        <div class="col-sm-9">{{ user_info.last_login_date }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3 info-label">操作:</div>
+                        <div class="col-sm-9"><a href="#" class="btn btn-primary">修改密码</a></div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3 info-label">通知邮箱:</div>
+                        <div class="col-sm-9">{{ user_info.notification_email }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3 info-label">电话:</div>
+                        <div class="col-sm-9">{{ user_info.phone }}</div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-12">
-        <div class="card  card-plain">
-          <div class="card-header">
-            <h4 class="card-title"> Table on Plain Background</h4>
-            <p class="category"> Here is a subtitle for this table</p>
-          </div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table tablesorter " id="">
-                <thead class=" text-primary">
-                  <tr>
-                    <th>
-                      Name
-                    </th>
-                    <th>
-                      Country
-                    </th>
-                    <th>
-                      City
-                    </th>
-                    <th class="text-center">
-                      Salary
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      Dakota Rice
-                    </td>
-                    <td>
-                      Niger
-                    </td>
-                    <td>
-                      Oud-Turnhout
-                    </td>
-                    <td class="text-center">
-                      $36,738
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      Minerva Hooper
-                    </td>
-                    <td>
-                      Curaçao
-                    </td>
-                    <td>
-                      Sinaai-Waas
-                    </td>
-                    <td class="text-center">
-                      $23,789
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      Sage Rodriguez
-                    </td>
-                    <td>
-                      Netherlands
-                    </td>
-                    <td>
-                      Baileux
-                    </td>
-                    <td class="text-center">
-                      $56,142
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      Philip Chaney
-                    </td>
-                    <td>
-                      Korea, South
-                    </td>
-                    <td>
-                      Overland Park
-                    </td>
-                    <td class="text-center">
-                      $38,735
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      Doris Greene
-                    </td>
-                    <td>
-                      Malawi
-                    </td>
-                    <td>
-                      Feldkirchen in Kärnten
-                    </td>
-                    <td class="text-center">
-                      $63,542
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      Mason Porter
-                    </td>
-                    <td>
-                      Chile
-                    </td>
-                    <td>
-                      Gloucester
-                    </td>
-                    <td class="text-center">
-                      $78,615
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      Jon Porter
-                    </td>
-                    <td>
-                      Portugal
-                    </td>
-                    <td>
-                      Gloucester
-                    </td>
-                    <td class="text-center">
-                      $98,615
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+
+            <div class="card">
+
+                <div class="card-header">
+                    <h4 class="card-title">云服务信息</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-sm-3 info-label">视频流地址:</div>
+                        <div class="col-sm-9">{{ user_info.video_stream_address }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3 info-label">监测图库:</div>
+                        <div class="col-sm-9">{{ user_info.monitoring_address }}</div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
+</div>
 
 {% endblock content %}
 

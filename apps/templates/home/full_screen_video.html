@@ -1,0 +1,72 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} 直播画面 {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<style>
+.video-container {
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+  width: 100%;
+  height: 100vh; /* 使容器高度为视口高度，实现垂直居中 */
+  background-color: transparent; /* 背景颜色设置为透明 */
+  margin: 0;
+}
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="content">
+  <div id="app">
+    <div class="video-container">
+      <!-- Video element for HLS or supported video formats -->
+      <video ref="videoElement" v-show="showVideo" controls></video>
+      <!-- Image element for fallback -->
+      <img src="{{ ASSETS_ROOT }}/img/video_feed.jpeg" v-show="!showVideo" alt="Video Stream" />
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script>
+new Vue({
+  el: '#app',
+  data() {
+    return {
+      showVideo: false, // Initially, try to show the video. If you want to show the image, set showVideo to false.
+      videoElement: null,
+      imgElement: null,
+    };
+  },
+  mounted() {
+    this.videoElement = this.$refs.videoElement;
+    this.imgElement = this.$refs.imgElement;
+
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource('http://192.168.43.21/hls/stream.m3u8');
+      hls.attachMedia(this.videoElement);
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        this.videoElement.play();
+        this.showVideo = true; // Show the video element if HLS is supported and loaded
+      });
+    } else if (this.videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+      this.videoElement.src = 'http://192.168.43.21/hls/stream.m3u8';
+      this.videoElement.addEventListener('loadedmetadata', () => {
+        this.videoElement.play();
+        this.showVideo = true; // Show the video element if the browser can play HLS natively
+      });
+    } else {
+      // If neither HLS nor native playback is supported, show the image element
+      this.showVideo = false;
+    }
+  }
+});
+</script>
+{% endblock javascripts %}

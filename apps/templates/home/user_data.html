@@ -1,0 +1,220 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Tables {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<style>
+    .btn-primary {
+        background-color: blue; /* 改为蓝色 */
+        border-color: blue; /* 改为蓝色 */
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #004085;
+    }
+    .info-label {
+        font-weight: bold;
+    }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <h2> 账户设置 </h2>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title"> 基本信息</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-sm-3 info-label">用户名:</div>
+                        <div class="col-sm-9">{{ user_info.username }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3 info-label">上次运行日期:</div>
+                        <div class="col-sm-9">{{ user_info.last_login_date }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3 info-label">操作:</div>
+                        <div class="col-sm-9">
+                            <button class="btn btn-primary" onclick="changePassword()">修改密码</button>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3 info-label">通知邮箱:</div>
+                        <div class="col-sm-9">{{ user_info.email }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3 info-label">操作:</div>
+                        <div class="col-sm-9">
+                            <button class="btn btn-primary" onclick="changeEmail()">更改邮箱</button>
+                            <button class="btn btn-danger" onclick="deleteEmail()">删除邮箱</button>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3 info-label">电话:</div>
+                        <div class="col-sm-9">{{ user_info.phone }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3 info-label">操作:</div>
+                        <div class="col-sm-9">
+                            <button class="btn btn-primary" onclick="changePhone()">更改电话</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">云服务信息</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-sm-3 info-label">视频流地址:</div>
+                        <div class="col-sm-9">{{ user_info.video_stream_address }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3 info-label">监测图库:</div>
+                        <div class="col-sm-9">{{ user_info.monitoring_address }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function changePassword() {
+        const username = '{{ user_info.username }}';
+        const password = prompt('请输入新密码:');
+        if (password) {
+            fetch('/change_password/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ username: username, password: password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('密码修改成功');
+                location.reload(); // 刷新页面
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    }
+
+    function changeEmail() {
+        const username = '{{ user_info.username }}';
+        const emailInfo = prompt('请输入新邮箱:');
+        if (emailInfo) {
+            fetch('/change_user_email/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ username: username, emailInfo: emailInfo })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('邮箱修改成功');
+                location.reload(); // 刷新页面
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    }
+
+    function deleteEmail() {
+        const username = '{{ user_info.username }}';
+        const emailInfo = '{{ user_info.email }}';
+        fetch('/delete_user_email/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ username: username, emailInfo: emailInfo })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert('邮箱删除成功');
+            location.reload(); // 刷新页面
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function changePhone() {
+        const username = '{{ user_info.username }}';
+        const phoneNum = prompt('请输入新电话:');
+        if (phoneNum) {
+            fetch('/change_user_phone/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ username: username, phoneNum: phoneNum })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('电话修改成功');
+                location.reload(); // 刷新页面
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    }
+
+    function uploadAvatar() {
+        const username = '{{ user_info.username }}';
+        const avatarInput = document.createElement('input');
+        avatarInput.type = 'file';
+        avatarInput.accept = 'image/*';
+        avatarInput.onchange = function(event) {
+            const file = event.target.files[0];
+            const formData = new FormData();
+            formData.append('username', username);
+            formData.append('avatar', file, 'avatar.png');
+            fetch('/upload_avatar/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('头像上传成功');
+                location.reload(); // 刷新页面
+            })
+            .catch(error => console.error('Error:', error));
+        };
+        avatarInput.click();
+    }
+</script>
+{% endblock javascripts %}

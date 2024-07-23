@@ -1,72 +1,45 @@
-
-    <div class="sidebar">
-        <!--
-          Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red"
-      -->
-        <div class="sidebar-wrapper">
-            <div class="logo">
-                <a href="javascript:void(0)" class="simple-text logo-mini">
-                    CT
+<div class="sidebar">
+    <!--
+      Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red"
+  -->
+    <div class="sidebar-wrapper">
+        <ul class="nav">
+            <li class="{% if 'index' in segment %} active {% endif %}">
+                <a href="/" style="display: flex; align-items: center;">
+                    <i class="tim-icons icon-chart-pie-36" style="font-size: 24px;"></i>
+                    <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">地图模式</h5>
                 </a>
-                <a href="javascript:void(0)" class="simple-text logo-normal">
-                    Creative Tim
+            </li>
+            <li class="{% if 'live' in segment %} active {% endif %}">
+                <a href="/live.html" style="display: flex; align-items: center;">
+                    <i class="tim-icons icon-atom" style="font-size: 24px;"></i>
+                    <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">直播模式</h5>
                 </a>
-            </div>
-            <ul class="nav">
-                <li class="{% if 'index' in segment %} active {% endif %} ">
-                    <a href="/">
-                        <i class="tim-icons icon-chart-pie-36"></i>
-                        <p>Dashboard</p>
-                    </a>
-                </li>
-                <li class="{% if 'icons' in segment %} active {% endif %}">
-                    <a href="/icons.html">
-                        <i class="tim-icons icon-atom"></i>
-                        <p>Icons</p>
-                    </a>
-                </li>
-                <li class="{% if 'map' in segment %} active {% endif %}">
-                    <a href="/map.html">
-                        <i class="tim-icons icon-pin"></i>
-                        <p>Maps</p>
-                    </a>
-                </li>
-                <li class="{% if 'notifications' in segment %} active {% endif %}">
-                    <a href="/notifications.html">
-                        <i class="tim-icons icon-bell-55"></i>
-                        <p>Notifications</p>
-                    </a>
-                </li>
-                <li class="{% if 'user' in segment %} active {% endif %}">
-                    <a href="/user.html">
-                        <i class="tim-icons icon-single-02"></i>
-                        <p>User Profile</p>
-                    </a>
-                </li>
-                <li class="{% if 'tables' in segment %} active {% endif %}">
-                    <a href="/tables.html">
-                        <i class="tim-icons icon-puzzle-10"></i>
-                        <p>Table List</p>
-                    </a>
-                </li>
-                <li class="{% if 'typography' in segment %} active {% endif %}">
-                    <a href="/typography.html">
-                        <i class="tim-icons icon-align-center"></i>
-                        <p>Typography</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="/rtl.html">
-                        <i class="tim-icons icon-world"></i>
-                        <p>RTL Support</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'login' %}">
-                        <i class="tim-icons icon-button-power"></i>
-                        <p>Logout</p>
-                    </a>
-                </li>
-            </ul>
-        </div>
+            </li>
+            <li class="{% if 'device' in segment %} active {% endif %}">
+                <a href="/device.html" style="display: flex; align-items: center;">
+                    <i class="tim-icons icon-pin" style="font-size: 24px;"></i>
+                    <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">设备详情</h5>
+                </a>
+            </li>
+            <li class="{% if 'notifications' in segment %} active {% endif %}">
+                <a href="/notifications.html" style="display: flex; align-items: center;">
+                    <i class="tim-icons icon-bell-55" style="font-size: 24px;"></i>
+                    <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">预警信息</h5>
+                </a>
+            </li>
+            <li class="{% if 'user' in segment %} active {% endif %}">
+                <a href="/user_data" style="display: flex; align-items: center;">
+                    <i class="tim-icons icon-single-02" style="font-size: 24px;"></i>
+                    <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">账户设置</h5>
+                </a>
+            </li>
+            <li class="{% if 'tables' in segment %} active {% endif %}">
+                <a href="/tables.html" style="display: flex; align-items: center;">
+                    <i class="tim-icons icon-puzzle-10" style="font-size: 24px;"></i>
+                    <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">后台管理</h5>
+                </a>
+            </li>
+        </ul>
     </div>
+</div>
