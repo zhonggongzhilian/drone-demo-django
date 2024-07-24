@@ -10,6 +10,7 @@ urlpatterns = [
 
     # The home page
     path('', views.index, name='home'),
+    path('device_list/', views.device_list, name='device_list'),
     path('full_screen_video', views.full_screen_video, name='full_screen_video'),
     path('user_data', views.user_data, name='user_data'),
     path('change_user_email/', views.change_user_email, name='change_user_email'),

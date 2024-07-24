@@ -1,185 +1,72 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Dashboard {% endblock %}
+{% block title %} 设备详情 {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
 <style>
-    #mapContainer {
+    body {
+        margin: 0;
+        overflow: hidden;
+    }
+    #model-container {
         width: 100%;
-        height: calc(66vh - 56px); /* 调整地图高度为页面高度的2/3，并减去卡片头部的高度 */
-        border-radius: 15px; /* 设置四个角为圆角 */
-        overflow: hidden;
+        height: 100%; /* 调整高度以适应父容器 */
     }
-    .content {
-        padding: 15px;
-    }
-    .card-container {
+    .device-info {
         display: flex;
-        height: calc(33vh - 56px); /* 调整卡片高度为页面高度的1/3，并减去卡片头部的高度 */
-        margin-top: 15px;
-    }
-    .card {
-        margin-right: 15px;
-        border-radius: 15px; /* 设置卡片圆角 */
-        padding: 15px;
-        overflow: hidden;
-    }
-    .card:last-child {
-        margin-right: 0;
-    }
-    .card-2-5 {
-        width: 40%; /* 设置宽度为 2/5 */
-    }
-    .card-1-5 {
-        width: 20%; /* 设置宽度为 1/5 */
-    }
-    .control-panel, .control-panel-2 {
-        display: grid;
-        gap: 10px;
-    }
-    .control-panel {
-        grid-template-columns: repeat(3, 1fr); /* 3列布局 */
-    }
-    .control-panel-2 {
-        grid-template-columns: repeat(2, 1fr); /* 2列布局 */
-    }
-    .control-panel button, .control-panel-2 button {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        background-color: #2c3e50;
-        color: #ecf0f1;
-        border: none;
-        border-radius: 5px;
-        padding: 10px 20px;
-        font-size: 14px;
-    }
-
-    .control-panel button i, .control-panel-2 button i,.control-panel-3 button i{
-        margin-right: 8px;
-        flex-shrink: 0;
-    }
-    .control-panel button, .control-panel-2 button, .control-panel-2 .slider, .control-panel-2 .dropdown {
-        background-color: #2c3e50;
-        color: #ecf0f1;
-        border: none;
-        border-radius: 5px;
+        flex-direction: column;
+        justify-content: space-around; /* 使内容均匀分布 */
+        height: 100%;
         padding: 20px;
-        text-align: center;
-        font-size: 14px;
+        margin: 20px auto 20px auto;
     }
-    .control-panel button:hover, .control-panel-2 button:hover, .control-panel-2 .slider:hover, .control-panel-2 .dropdown:hover {
-        background-color: #34495e;
-    }
-    .direction-pad {
-    display: grid;
-    grid-template-rows: repeat(3, 1fr);
-    grid-template-columns: repeat(3, 1fr);
-    gap: 5px;
-    padding: 20px;
-    background-color: #2c3e50;
-    border-radius: 10px;
-    margin-bottom: 15px;
-}
-.control-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ecf0f1;
-    font-size: 16px;
-    height: 40px;
-    width: 40px;
-    background-color: #34495e;
-    border-radius: 5px;
-}
-.control-btn.center {
-    background-color: #1abc9c;
-}
-.slider {
-    margin: 15px 0;
-}
-.slider input {
-    width: 100%;
-}
-.bottom-controls {
-    display: flex;
-    justify-content: space-between;
-}
-.bottom-controls button {
-    flex: 1;
-    margin: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #2c3e50;
-    color: #ecf0f1;
-    border: none;
-    border-radius: 5px;
-    padding: 10px;
-    font-size: 14px;
-}
-.bottom-controls button i {
-    margin-right: 8px;
-    flex-shrink: 0;
-}
-.bottom-controls button:hover {
-    background-color: #34495e;
-}
-    .bottom-controls {
+    .card-custom {
         display: flex;
-        justify-content: space-between;
+        flex-direction: row; /* 确保子元素横向排列 */
+        background-color: transparent; /* 卡片背景设为透明 */
+        border-radius: 10px;
+        overflow: hidden;
+        width: 80%; /* 占据屏幕的 4/5 */
+        height: 66vh; /* 卡片高度设置为屏幕高度的 2/3 */
+        margin: 150px auto 0 auto; /* 上边距为 150px，左右居中 */
     }
-    .bottom-controls button {
+    .model-section {
+        flex: 2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(10px);
+        background-color: rgba(255, 255, 255, 0.5); /* 半透明毛玻璃效果 */
+        min-width: 400px; /* 设置一个最小宽度 */
+    }
+    .info-section {
         flex: 1;
-        margin: 5px;
+        min-width: 200px; /* 设置一个最小宽度 */
+        padding: 20px;
+        overflow-y: auto; /* 添加滚动条以防信息过多 */
+        background-color: var(--info-section-bg-color); /* 使用主题颜色 */
+        color: var(--info-section-text-color); /* 使用主题文本颜色 */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around; /* 使内容均匀分布 */
     }
 </style>
 {% endblock stylesheets %}
 
 {% block content %}
 <div class="content">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card-body">
-                <div id="mapContainer"></div>
-            </div>
+    <div class="card card-custom">
+        <div class="model-section">
+            <div id="model-container"></div>
         </div>
-    </div>
-    <div class="card-container">
-        <div class="card card-2-5">
-            <div class="card-header">
-                飞行控制
-            </div>
-            <div class="card-body">
-                <div class="control-panel">
-                    <button><i class="fas fa-play"></i><span>开始作业</span></button>
-                    <button><i class="fas fa-arrow-up"></i><span>起飞</span></button>
-                    <button><i class="fas fa-pause"></i><span>暂停</span></button>
-                    <button><i class="fas fa-undo"></i><span>返航</span></button>
-                    <button><i class="fas fa-stop"></i><span>停止</span></button>
-                    <button><i class="fas fa-arrow-down"></i><span>迫降</span></button>
-                    <button><i class="fas fa-toggle-on"></i><span>开启摇杆</span></button>
-                    <button><i class="fas fa-toggle-off"></i><span>关闭摇杆</span></button>
-                </div>
-            </div>
-        </div>
-        <div class="card card-2-5">
-            <div class="card-header">
-                载荷控制
-            </div>
-            <div class="card-body">
-            </div>
-        </div>
-        <div class="card card-1-5">
-            <div class="card-header">
-                其他
-            </div>
-            <div class="card-body">
-                <div class="control-panel">
-                    <button><i class="fas fa-video"></i><span>视频快拼</span></button>
-                    <button><i class="fas fa-link"></i><span>网络链路</span></button>
-                </div>
+        <div class="info-section">
+            <div class="card-body device-info">
+                <h2 class="card-title">设备详情</h2>
+                <h3><strong>无人机序列号:</strong> {{ device.drone_sn }}</h3>
+                <h3><strong>远程控制器序列号:</strong> {{ device.remote_sn }}</h3>
+                <h3><strong>工作区ID:</strong> {{ device.workspace_id }}</h3>
+                <h3><strong>设备状态:</strong> {{ device.status }}</h3>
             </div>
         </div>
     </div>
@@ -188,51 +75,91 @@
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
-<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=你的高德地图API密钥"></script>
-<script type="text/javascript">
-    var map = new AMap.Map('mapContainer', {
-        resizeEnable: true,
-        center: [119.24547, 32.26518], // 地图中心点
-        zoom: 15, // 地图缩放级别
-        mapStyle: 'amap://styles/dark' // 深色主题样式
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script>
+    // Basic setup
+    const container = document.getElementById('model-container');
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+    camera.position.set(0, 1, 5); // 调整相机位置
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setClearColor(0x000000, 0); // 背景设为透明
+    container.appendChild(renderer.domElement);
+
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0x404040, 2); // soft white light
+    scene.add(ambientLight);
+
+    const lights = [];
+    lights[0] = new THREE.DirectionalLight(0xffffff, 1);
+    lights[0].position.set(1, 1, 1).normalize();
+    lights[1] = new THREE.DirectionalLight(0xffffff, 1);
+    lights[1].position.set(-1, 1, 1).normalize();
+    lights[2] = new THREE.DirectionalLight(0xffffff, 1);
+    lights[2].position.set(1, 1, -1).normalize();
+    lights[3] = new THREE.DirectionalLight(0xffffff, 1);
+    lights[3].position.set(-1, 1, -1).normalize();
+    lights[4] = new THREE.DirectionalLight(0xffffff, 1);
+    lights[4].position.set(0, 1, 0).normalize();
+
+    for (let i = 0; i < lights.length; i++) {
+        scene.add(lights[i]);
+    }
+
+    const pointLights = [];
+    pointLights[0] = new THREE.PointLight(0xffffff, 0.5);
+    pointLights[0].position.set(2, 2, 2);
+    pointLights[1] = new THREE.PointLight(0xffffff, 0.5);
+    pointLights[1].position.set(-2, 2, 2);
+    pointLights[2] = new THREE.PointLight(0xffffff, 0.5);
+    pointLights[2].position.set(2, 2, -2);
+    pointLights[3] = new THREE.PointLight(0xffffff, 0.5);
+    pointLights[3].position.set(-2, 2, -2);
+
+    for (let i = 0; i < pointLights.length; i++) {
+        scene.add(pointLights[i]);
+    }
+
+    let model;
+    // Load model
+    const loader = new THREE.GLTFLoader();
+    loader.load('{{ ASSETS_ROOT }}/model/mav_3_pro_unfold.glb', function (gltf) {
+        model = gltf.scene;
+        model.scale.set(12,12,12); // 调整缩放比例
+        model.position.y += 1; // 提高模型位置
+        model.rotation.x = Math.PI / 8; // 设定初始旋转角度
+        model.rotation.y = Math.PI / -6; // 设定初始旋转角度
+        model.rotation.z = 0; // 设定初始旋转角度
+        scene.add(model);
+        animate();
+    }, undefined, function (error) {
+        console.error(error);
     });
 
-    // 创建一个标记，并设置图标为红色
-    var marker = new AMap.Marker({
-        position: new AMap.LngLat(119.24547, 32.26518), // 标记的经纬度
-        title: '指定位置',
-        icon: new AMap.Icon({
-            size: new AMap.Size(25, 34), // 图标大小
-            image: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_r.png' // 红色图标的URL
-        })
+    camera.position.z = 5; // 调整相机位置
+
+    // Animate function
+    function animate() {
+        requestAnimationFrame(animate);
+        if (model) {
+            model.rotation.y += 0.01; // 模型自动旋转
+        }
+        renderer.render(scene, camera);
+    }
+
+    // Handle window resize
+    window.addEventListener('resize', function () {
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+        renderer.setSize(width, height);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
     });
 
-    // 将标记添加到地图上
-    map.add(marker);
-
-    // 添加工具栏控件
-    AMap.plugin(['AMap.ToolBar'], function() {
-        var toolBar = new AMap.ToolBar();
-        map.addControl(toolBar);
-    });
-
-    // 添加比例尺控件
-    AMap.plugin(['AMap.Scale'], function() {
-        var scale = new AMap.Scale();
-        map.addControl(scale);
-    });
-
-    // 添加地图类型切换控件并设置默认类型为卫星图
-    AMap.plugin(['AMap.MapType'], function() {
-        var mapType = new AMap.MapType({
-            defaultType: 1 // 0表示默认标准图，1表示卫星图
-        });
-        map.addControl(mapType);
-    });
-
-    // 设置默认显示为卫星地图
-    map.setLayers([
-        new AMap.TileLayer.Satellite()
-    ]);
+    animate();
 </script>
 {% endblock javascripts %}

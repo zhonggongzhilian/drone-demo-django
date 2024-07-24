@@ -1,0 +1,62 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} 设备列表 {% endblock %}
+
+{% block stylesheets %}
+<style>
+    .info-label {
+        font-weight: bold;
+    }
+    .device-banner {
+        border: 1px solid #dee2e6;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 0.25rem;
+        background-color: #f8f9fa;
+    }
+    .device-banner h5 {
+        margin-bottom: 0.5rem;
+    }
+    .device-banner .info-item {
+        margin-bottom: 0.5rem;
+    }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <h2> 设备列表 </h2>
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title"> 基本信息</h4>
+                </div>
+                <div class="card-body">
+                    {% for device in devices %}
+                    <div class="device-banner">
+                        <h5>设备信息</h5>
+                        <div class="info-item">
+                            <span class="info-label">无人机序列号: </span>{{ device.drone_sn }}
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">远程控制器序列号: </span>{{ device.remote_sn }}
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">工作区ID: </span>{{ device.workspace_id }}
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">设备状态: </span>{{ device.status }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+{% endblock javascripts %}

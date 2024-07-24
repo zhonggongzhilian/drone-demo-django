@@ -1,100 +1,86 @@
+<!-- Include Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
+<nav class="navbar navbar-expand-lg navbar-transparent fixed-top" style="backdrop-filter: blur(10px); background-color: rgba(255, 255, 255, 0.5); width: 100%; z-index: 1000; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
     <div class="container-fluid">
-        <div class="navbar-wrapper">
-            <div class="navbar-toggle d-inline">
-                <button type="button" class="navbar-toggler">
-                    <span class="navbar-toggler-bar bar1"></span>
-                    <span class="navbar-toggler-bar bar2"></span>
-                    <span class="navbar-toggler-bar bar3"></span>
-                </button>
+        <div class="navbar-wrapper" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <div style="display: flex; align-items: center;">
+                <div class="navbar-toggle d-inline">
+                    <button type="button" class="navbar-toggler">
+                        <span class="navbar-toggler-bar bar1"></span>
+                        <span class="navbar-toggler-bar bar2"></span>
+                        <span class="navbar-toggler-bar bar3"></span>
+                    </button>
+                </div>
+                <div class="photo" style="display: flex; align-items: center; height: 60px;">
+                    <img src="{{ ASSETS_ROOT }}/img/zgzl.png" alt="Profile Photo" style="object-fit: contain; margin-right: 15px;">
+                    <a class="navbar-brand" href="javascript:void(0)" style="font-size: 24px; flex-shrink: 0; margin-left: 36px;">中工智联 ｜ AI 智能无人机巡检系统</a>
+                </div>
             </div>
-            <div class="photo" style="display: flex; align-items: center; height: 60px;">
-                <img src="{{ ASSETS_ROOT }}/img/zgzl.png" alt="Profile Photo"
-                     style="object-fit: contain; margin-right: 15px;">
-                <a class="navbar-brand" href="javascript:void(0)" style="font-size: 24px; flex-shrink: 0; margin-left: 36px;">中工智联 ｜ AI
-                    智能无人机巡检系统</a>
-            </div>
-        </div>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation"
-                aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-bar navbar-kebab"></span>
-            <span class="navbar-toggler-bar navbar-kebab"></span>
-            <span class="navbar-toggler-bar navbar-kebab"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navigation">
-            <ul class="navbar-nav ml-auto">
+            <ul class="navbar-nav mx-auto" style="display: flex; align-items: center;">
+                <li class="nav-item {% if 'index' in segment %} active {% endif %}">
+                    <a href="/" class="nav-link" style="display: flex; align-items: center;">
+                        <i class="fas fa-map-marked-alt" style="font-size: 24px;"></i> <!-- 更换为地图图标 -->
+                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">地图模式</h5>
+                    </a>
+                </li>
+                <li class="nav-item {% if 'live' in segment %} active {% endif %}">
+                    <a href="/live.html" class="nav-link" style="display: flex; align-items: center;">
+                        <i class="fas fa-video" style="font-size: 24px;"></i> <!-- 更换为视频图标 -->
+                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">直播模式</h5>
+                    </a>
+                </li>
+                <li class="nav-item {% if 'user' in segment %} active {% endif %}">
+                    <a href="{% url 'user_data' %}" class="nav-link" style="display: flex; align-items: center;">
+                        <i class="fas fa-user-circle" style="font-size: 24px;"></i> <!-- 更换为用户图标 -->
+                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">账户设置</h5>
+                    </a>
+                </li>
+                <li class="nav-item {% if 'device_list' in segment %} active {% endif %}">
+                    <a href="{% url 'device_list' %}" class="nav-link" style="display: flex; align-items: center;">
+                        <i class="fas fa-desktop" style="font-size: 24px;"></i> <!-- 更换为无人机图标 -->
+                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">设备详情</h5>
+                    </a>
+                </li>
+                <li class="nav-item {% if 'notifications' in segment %} active {% endif %}">
+                    <a href="/notifications.html" class="nav-link" style="display: flex; align-items: center;">
+                        <i class="fas fa-bell" style="font-size: 24px;"></i> <!-- 更换为通知图标 -->
+                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">预警信息</h5>
+                    </a>
+                </li>
+                <li class="nav-item {% if 'tables' in segment %} active {% endif %}">
+                    <a href="/tables.html" class="nav-link" style="display: flex; align-items: center;">
+                        <i class="fas fa-cogs" style="font-size: 24px;"></i> <!-- 更换为设置图标 -->
+                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">后台管理</h5>
+                    </a>
+                </li>
+            </ul>
+            <ul class="navbar-nav" style="display: flex; align-items: center;">
                 <li class="input-group d-flex align-items-center mb-0">
                     <label class="switch theme-switch">
                         <input type="checkbox" class="bsc" checked="">
                         <span class="slider"></span>
                     </label>
                 </li>
-                <li class="search-bar input-group">
-                    <button class="btn btn-link" id="search-button" data-toggle="modal"
-                            data-target="#searchModal"><i class="tim-icons icon-zoom-split"></i>
-                        <span class="d-lg-none d-md-block">Search</span>
-                    </button>
-                </li>
-                <li class="dropdown nav-item">
-                    <a href="javascript:void(0)" class="dropdown-toggle nav-link" data-toggle="dropdown">
-                        <div class="notification d-none d-lg-block d-xl-block"></div>
-                        <i class="tim-icons icon-sound-wave"></i>
-                        <p class="d-lg-none">
-                            Notifications
-                        </p>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-right dropdown-navbar">
-                        <li class="nav-link"><a href="#" class="nav-item dropdown-item">Mike John responded to
-                            your email</a></li>
-                        <li class="nav-link"><a href="javascript:void(0)" class="nav-item dropdown-item">You
-                            have 5 more tasks</a></li>
-                        <li class="nav-link"><a href="javascript:void(0)" class="nav-item dropdown-item">Your
-                            friend Michael is in town</a></li>
-                        <li class="nav-link"><a href="javascript:void(0)" class="nav-item dropdown-item">Another
-                            notification</a></li>
-                        <li class="nav-link"><a href="javascript:void(0)" class="nav-item dropdown-item">Another
-                            one</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown nav-item">
-                    <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-                        <div class="photo">
-                            <img src="{{ ASSETS_ROOT }}/img/anime3.png" alt="Profile Photo">
-                        </div>
-                        <b class="caret d-none d-lg-block d-xl-block"></b>
-                        <p class="d-lg-none">
-                            Log out
-                        </p>
-                    </a>
-                    <ul class="dropdown-menu dropdown-navbar">
-                        <li class="nav-link">
-                            <a href="/user.html" class="nav-item dropdown-item">Profile</a>
-                        </li>
-                        <li class="dropdown-divider"></li>
-                        <li class="nav-link">
-                            <a href="{% url 'login' %}"
-                               class="nav-item dropdown-item">Logout</a>
-                        </li>
-                    </ul>
-                </li>
                 <li class="separator d-lg-none"></li>
             </ul>
         </div>
     </div>
 </nav>
-<div class="modal modal-search fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModal"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="SEARCH">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <i class="tim-icons icon-simple-remove"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 <!-- End Navbar -->
-        
+
+<style>
+    .nav-link {
+        transition: background-color 0.3s, transform 0.3s;
+        border-radius: 8px; /* 设置圆角 */
+        padding: 5px 10px; /* 添加内边距使按钮更显著 */
+    }
+    .nav-link:hover {
+        background-color: rgba(0, 123, 255, 0.1); /* 悬停时浅蓝色背景 */
+    }
+    .nav-link:active {
+        background-color: rgba(0, 123, 255, 0.2); /* 点击时稍深的蓝色背景 */
+        transform: scale(0.95); /* 点击时稍微缩小 */
+    }
+</style>

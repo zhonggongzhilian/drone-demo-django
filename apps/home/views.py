@@ -3,6 +3,7 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 
+import json
 import logging
 
 import requests
@@ -104,20 +105,24 @@ def user_data(request):
 @csrf_exempt
 def change_user_email(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        email_info = request.POST.get('emailInfo')
-        data = {
-            "username": username,
-            "alterItem": {
-                "email": email_info
-            }
-        }
         try:
-            response = requests.post(f'{BACKEND}/alterEmail', json=data)
+            data = json.loads(request.body)
+            username = data.get('username')
+            email_info = data.get('emailInfo')
+            payload = {
+                "username": username,
+                "alterItem": {
+                    "email": email_info
+                }
+            }
+            print(payload)
+            response = requests.post(f'{BACKEND}/alterEmail', json=payload)
             if response.status_code == 200:
                 return JsonResponse(response.json())
             else:
                 return JsonResponse({'error': 'Failed to change email'}, status=response.status_code)
+        except json.JSONDecodeError as e:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
         except requests.exceptions.RequestException as e:
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request'}, status=400)
@@ -126,20 +131,24 @@ def change_user_email(request):
 @csrf_exempt
 def delete_user_email(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        email_info = request.POST.get('emailInfo')
-        data = {
-            "username": username,
-            "alterItem": {
-                "email": email_info
-            }
-        }
         try:
-            response = requests.post(f'{BACKEND}/deleteEmail', json=data)
+            data = json.loads(request.body)
+            username = data.get('username')
+            email_info = data.get('emailInfo')
+            payload = {
+                "username": username,
+                "alterItem": {
+                    "email": email_info
+                }
+            }
+            print("delete email: ", payload)
+            response = requests.post(f'{BACKEND}/deleteEmail', json=payload)
             if response.status_code == 200:
                 return JsonResponse(response.json())
             else:
                 return JsonResponse({'error': 'Failed to delete email'}, status=response.status_code)
+        except json.JSONDecodeError as e:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
         except requests.exceptions.RequestException as e:
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request'}, status=400)
@@ -148,23 +157,23 @@ def delete_user_email(request):
 @csrf_exempt
 def change_user_phone(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        phone_num = request.POST.get('phoneNum')
-        data = {
-            "username": username,
-            "alterItem": {
-                "phone": str(phone_num)
-            }
-        }
-        print(data)
         try:
-            response = requests.post(f'{BACKEND}/alterPhone', json=data)
+            data = json.loads(request.body)
+            username = data.get('username')
+            phone_num = data.get('phoneNum')
+            payload = {
+                "username": username,
+                "alterItem": {
+                    "phone": phone_num
+                }
+            }
+            response = requests.post(f'{BACKEND}/alterPhone', json=payload)
             if response.status_code == 200:
-                print("Change user phone success!")
                 return JsonResponse(response.json())
             else:
-                print("Failed changing user phone!")
                 return JsonResponse({'error': 'Failed to change phone number'}, status=response.status_code)
+        except json.JSONDecodeError as e:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
         except requests.exceptions.RequestException as e:
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request'}, status=400)
@@ -173,21 +182,23 @@ def change_user_phone(request):
 @csrf_exempt
 def change_password(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        data = {
-            "username": username,
-            "alterItem": {
-                "password": password
-            }
-        }
         try:
-            response = requests.post(f'{BACKEND}/alterpassword', json=data)
+            data = json.loads(request.body)
+            username = data.get('username')
+            password = data.get('password')
+            payload = {
+                "username": username,
+                "alterItem": {
+                    "password": password
+                }
+            }
+            response = requests.post(f'{BACKEND}/alterpassword', json=payload)
             if response.status_code == 200:
-                print('')
                 return JsonResponse(response.json())
             else:
                 return JsonResponse({'error': 'Failed to change password'}, status=response.status_code)
+        except json.JSONDecodeError as e:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
         except requests.exceptions.RequestException as e:
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request'}, status=400)
@@ -212,3 +223,15 @@ def upload_avatar(request):
         except requests.exceptions.RequestException as e:
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+def device_list(request):
+    devices = [
+        {'drone_sn': '1581F5FHD23BP00DP8VH', 'remote_sn': '5YSZLBH0034M17', 'workspace_id': 'Not Given', 'status': '在线'},
+        {'drone_sn': '1581F5FJD23AB00D6U1P', 'remote_sn': '5YSZLBH0034M17', 'workspace_id': 'Not Given', 'status': '在线'},
+        {'drone_sn': '1971F5FYJ98HP00DP9QV', 'remote_sn': '5YSZLA90033XY2', 'workspace_id': 'Not Given', 'status': '在线'},
+        {'drone_sn': '1971F5FYJ98HP00DP9QV', 'remote_sn': '9H86LBH1196M66', 'workspace_id': 'Not Given', 'status': '在线'}
+    ]
+    for d in devices:
+        print(d)
+    return render(request, 'home/device_list.html', {'devices': devices})

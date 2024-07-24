@@ -16,8 +16,14 @@
                     <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">直播模式</h5>
                 </a>
             </li>
-            <li class="{% if 'device' in segment %} active {% endif %}">
-                <a href="/device.html" style="display: flex; align-items: center;">
+            <li class="{% if 'user' in segment %} active {% endif %}">
+                <a href="{% url 'user_data' %}" style="display: flex; align-items: center;">
+                    <i class="tim-icons icon-single-02" style="font-size: 24px;"></i>
+                    <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">账户设置</h5>
+                </a>
+            </li>
+            <li class="{% if 'device_list' in segment %} active {% endif %}">
+                <a href="{% url 'device_list' %}" style="display: flex; align-items: center;">
                     <i class="tim-icons icon-pin" style="font-size: 24px;"></i>
                     <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">设备详情</h5>
                 </a>
@@ -26,12 +32,6 @@
                 <a href="/notifications.html" style="display: flex; align-items: center;">
                     <i class="tim-icons icon-bell-55" style="font-size: 24px;"></i>
                     <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">预警信息</h5>
-                </a>
-            </li>
-            <li class="{% if 'user' in segment %} active {% endif %}">
-                <a href="/user_data" style="display: flex; align-items: center;">
-                    <i class="tim-icons icon-single-02" style="font-size: 24px;"></i>
-                    <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">账户设置</h5>
                 </a>
             </li>
             <li class="{% if 'tables' in segment %} active {% endif %}">
