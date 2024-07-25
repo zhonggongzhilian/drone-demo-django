@@ -1,11 +1,9 @@
-# -*- encoding: utf-8 -*-
-"""
-Copyright (c) 2019 - present AppSeed.us
-"""
-
+# forms.py
 from django import forms
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+
+CustomUser = get_user_model()
 
 
 class LoginForm(forms.Form):
@@ -26,6 +24,22 @@ class LoginForm(forms.Form):
 
 
 class SignUpForm(UserCreationForm):
+    full_name = forms.CharField(
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Full Name",
+                "class": "form-control"
+            }
+        ))
+    phone_number = forms.CharField(
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Phone Number",
+                "class": "form-control"
+            }
+        ))
     username = forms.CharField(
         widget=forms.TextInput(
             attrs={
@@ -56,5 +70,5 @@ class SignUpForm(UserCreationForm):
         ))
 
     class Meta:
-        model = User
-        fields = ('username', 'email', 'password1', 'password2')
+        model = CustomUser
+        fields = ('full_name', 'phone_number', 'username', 'email', 'password1', 'password2')

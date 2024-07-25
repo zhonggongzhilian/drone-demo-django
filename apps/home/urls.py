@@ -18,6 +18,9 @@ urlpatterns = [
     path('change_user_phone/', views.change_user_phone, name='change_user_phone'),
     path('change_password/', views.change_password, name='change_password'),
     path('upload_avatar/', views.upload_avatar, name='upload_avatar'),
+    path('live/', views.live_view, name='live_view'),
+    path('edit_profile/', views.edit_profile, name='edit_profile'),
+    path('add_drone/', views.add_drone, name='add_drone'),
     # Matches any html file
     re_path(r'^.*\.*', views.pages, name='pages'),
 

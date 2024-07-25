@@ -34,6 +34,8 @@ BACKEND_URL = 'http://1.13.23.62:5000'
 
 # Application definition
 
+AUTH_USER_MODEL = 'home.CustomUser'
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

@@ -1,62 +1,193 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} 设备列表 {% endblock %}
+{% block title %} 设备详情 {% endblock %}
 
+<!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
 <style>
-    .info-label {
-        font-weight: bold;
+    body {
+        margin: 0;
+        overflow-x: hidden;
     }
-    .device-banner {
-        border: 1px solid #dee2e6;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        border-radius: 0.25rem;
-        background-color: #f8f9fa;
+    .model-container {
+        width: 100%;
+        height: 100%; /* 调整高度以适应父容器 */
     }
-    .device-banner h5 {
-        margin-bottom: 0.5rem;
+    .device-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around; /* 使内容均匀分布 */
+        height: 100%;
+        padding: 20px;
+        margin: 10px auto; /* 缩小上下间距 */
     }
-    .device-banner .info-item {
-        margin-bottom: 0.5rem;
+    .card-custom {
+        display: flex;
+        flex-direction: row; /* 确保子元素横向排列 */
+        background-color: transparent; /* 卡片背景设为透明 */
+        border-radius: 10px;
+        overflow: hidden;
+        width: 50%; /* 占据屏幕的 1/2 */
+        height: 50vh; /* 卡片高度设置为屏幕高度的 1/2 */
+        margin: 50px auto 0 auto; /* 上边距缩小 */
+    }
+    .model-section {
+        flex: 2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(10px);
+        background-color: rgba(255, 255, 255, 0.5); /* 半透明毛玻璃效果 */
+        min-width: 200px; /* 设置一个最小宽度 */
+    }
+    .info-section {
+        flex: 1;
+        min-width: 100px; /* 设置一个最小宽度 */
+        padding: 20px;
+        overflow-y: auto; /* 添加滚动条以防信息过多 */
+        background-color: rgba(255, 255, 255, 0.5); /* 半透明白色背景 */
+        color: var(--info-section-text-color); /* 使用主题文本颜色 */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around; /* 使内容均匀分布 */
+    }
+    .background-video {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        object-fit: cover;
+    }
+    .content {
+        margin: 100px;
+        position: relative;
+        z-index: 1;
+        background-color: transparent; /* 内容背景设为透明 */
     }
 </style>
 {% endblock stylesheets %}
 
 {% block content %}
+<video autoplay muted loop class="background-video">
+    <source src="{{ ASSETS_ROOT }}/img/bgv.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
 
 <div class="content">
-    <div class="row">
-        <div class="col-md-12">
-            <h2> 设备列表 </h2>
-            <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title"> 基本信息</h4>
-                </div>
-                <div class="card-body">
-                    {% for device in devices %}
-                    <div class="device-banner">
-                        <h5>设备信息</h5>
-                        <div class="info-item">
-                            <span class="info-label">无人机序列号: </span>{{ device.drone_sn }}
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">远程控制器序列号: </span>{{ device.remote_sn }}
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">工作区ID: </span>{{ device.workspace_id }}
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">设备状态: </span>{{ device.status }}
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
+    {% for device in devices %}
+    <div class="card card-custom">
+        <div class="model-section">
+            <div id="model-container-{{ forloop.counter }}" class="model-container"></div>
+        </div>
+        <div class="info-section">
+            <div class="card-body device-info">
+                <h2 class="card-title">设备详情</h2>
+                <h3><strong>无人机序列号:</strong> {{ device.drone_sn }}</h3>
+                <h3><strong>远程控制器序列号:</strong> {{ device.remote_sn }}</h3>
+                <h3><strong>工作区ID:</strong> {{ device.workspace_id }}</h3>
+                <h3><strong>设备状态:</strong> {{ device.status }}</h3>
             </div>
         </div>
     </div>
+    {% endfor %}
 </div>
 {% endblock content %}
 
+<!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const devices = {{ devices|safe }}; // 将设备信息作为一个变量传递给JavaScript
+
+        devices.forEach((device, index) => {
+            const containerId = 'model-container-' + (index + 1);
+            const container = document.getElementById(containerId);
+            const scene = new THREE.Scene();
+
+            const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.set(0, 1, 5); // 调整相机位置
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setClearColor(0x000000, 0); // 背景设为透明
+            container.appendChild(renderer.domElement);
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0x404040, 2); // soft white light
+            scene.add(ambientLight);
+
+            const lights = [];
+            lights[0] = new THREE.DirectionalLight(0xffffff, 1);
+            lights[0].position.set(1, 1, 1).normalize();
+            lights[1] = new THREE.DirectionalLight(0xffffff, 1);
+            lights[1].position.set(-1, 1, 1).normalize();
+            lights[2] = new THREE.DirectionalLight(0xffffff, 1);
+            lights[2].position.set(1, 1, -1).normalize();
+            lights[3] = new THREE.DirectionalLight(0xffffff, 1);
+            lights[3].position.set(-1, 1, -1).normalize();
+            lights[4] = new THREE.DirectionalLight(0xffffff, 1);
+            lights[4].position.set(0, 1, 0).normalize();
+
+            for (let j = 0; j < lights.length; j++) {
+                scene.add(lights[j]);
+            }
+
+            const pointLights = [];
+            pointLights[0] = new THREE.PointLight(0xffffff, 0.5);
+            pointLights[0].position.set(2, 2, 2);
+            pointLights[1] = new THREE.PointLight(0xffffff, 0.5);
+            pointLights[1].position.set(-2, 2, 2);
+            pointLights[2] = new THREE.PointLight(0xffffff, 0.5);
+            pointLights[2].position.set(2, 2, -2);
+            pointLights[3] = new THREE.PointLight(0xffffff, 0.5);
+            pointLights[3].position.set(-2, 2, -2);
+
+            for (let j = 0; j < pointLights.length; j++) {
+                scene.add(pointLights[j]);
+            }
+
+            let model;
+            // Load model
+            const loader = new THREE.GLTFLoader();
+            loader.load('{{ ASSETS_ROOT }}/model/mav_3_pro_unfold.glb', function (gltf) {
+                model = gltf.scene;
+                model.scale.set(12, 12, 12); // 调整缩放比例
+                model.position.y += 1; // 提高模型位置
+                model.rotation.x = Math.PI / 8; // 设定初始旋转角度
+                model.rotation.y = Math.PI / -6; // 设定初始旋转角度
+                model.rotation.z = 0; // 设定初始旋转角度
+                scene.add(model);
+                animate();
+            }, undefined, function (error) {
+                console.error(error);
+            });
+
+            camera.position.z = 5; // 调整相机位置
+
+            // Animate function
+            function animate() {
+                requestAnimationFrame(animate);
+                if (model) {
+                    model.rotation.y += 0.01; // 模型自动旋转
+                }
+                renderer.render(scene, camera);
+            }
+
+            // Handle window resize
+            window.addEventListener('resize', function () {
+                const width = container.clientWidth;
+                const height = container.clientHeight;
+                renderer.setSize(width, height);
+                camera.aspect = width / height;
+                camera.updateProjectionMatrix();
+            });
+
+            animate();
+        });
+    });
+</script>
 {% endblock javascripts %}

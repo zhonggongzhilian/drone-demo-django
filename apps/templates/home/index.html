@@ -1,165 +1,231 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} 设备详情 {% endblock %}
+{% block title %} Dashboard {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
 <style>
-    body {
-        margin: 0;
-        overflow: hidden;
-    }
-    #model-container {
+    #mapContainer {
         width: 100%;
-        height: 100%; /* 调整高度以适应父容器 */
-    }
-    .device-info {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around; /* 使内容均匀分布 */
-        height: 100%;
-        padding: 20px;
-        margin: 20px auto 20px auto;
-    }
-    .card-custom {
-        display: flex;
-        flex-direction: row; /* 确保子元素横向排列 */
-        background-color: transparent; /* 卡片背景设为透明 */
-        border-radius: 10px;
+        height: 100vh; /* 调整地图高度为页面高度 */
+        border-radius: 15px; /* 设置四个角为圆角 */
         overflow: hidden;
-        width: 80%; /* 占据屏幕的 4/5 */
-        height: 66vh; /* 卡片高度设置为屏幕高度的 2/3 */
-        margin: 150px auto 0 auto; /* 上边距为 150px，左右居中 */
     }
-    .model-section {
-        flex: 2;
+    .content {
+        padding: 0;
+        margin: 0;
+    }
+    .control-panel {
+        position: fixed;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%);
         display: flex;
         justify-content: center;
-        align-items: center;
-        backdrop-filter: blur(10px);
-        background-color: rgba(255, 255, 255, 0.5); /* 半透明毛玻璃效果 */
-        min-width: 400px; /* 设置一个最小宽度 */
+        gap: 10px;
+        background-color: rgba(44, 62, 80, 0.4); /* 半透明背景 */
+        padding: 10px;
+        border-radius: 10px;
+        z-index: 999; /* 确保按钮在最前面 */
+        backdrop-filter: blur(10px); /* 毛玻璃效果 */
     }
-    .info-section {
-        flex: 1;
-        min-width: 200px; /* 设置一个最小宽度 */
-        padding: 20px;
-        overflow-y: auto; /* 添加滚动条以防信息过多 */
-        background-color: var(--info-section-bg-color); /* 使用主题颜色 */
-        color: var(--info-section-text-color); /* 使用主题文本颜色 */
+    .control-panel button {
+        transition: background-color 0.3s, transform 0.3s;
         display: flex;
-        flex-direction: column;
-        justify-content: space-around; /* 使内容均匀分布 */
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(44, 62, 80, 0.4); /* 按钮半透明背景 */
+        color: #ecf0f1;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+    .control-panel button i {
+        margin-right: 8px;
+        flex-shrink: 0;
+    }
+    .control-panel button:hover {
+        transform: scale(1.1);
+        background-color: rgba(44, 62, 80, 0.6); /* 按钮悬停效果 */
+    }
+    .marker-shadow {
+        filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.5));
+    }
+    .marker-highlight {
+        animation: markerGrow 0.3s forwards; /* 标记变大动画 */
+    }
+    .marker-normal {
+        animation: markerShrink 0.3s forwards; /* 标记缩小动画 */
+    }
+    @keyframes markerGrow {
+        from {
+            transform: scale(1);
+        }
+        to {
+            transform: scale(1.4); /* 标记变大的比例 */
+        }
+    }
+    @keyframes markerShrink {
+        from {
+            transform: scale(1.4); /* 缩小动画从大开始 */
+        }
+        to {
+            transform: scale(1); /* 缩小到原始大小 */
+        }
+    }
+    .toast {
+        position: fixed;
+        bottom: 80px; /* 位置高于 control-panel */
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px 20px;
+        background-color: rgba(255, 255, 255, 0.7); /* 白色半透明毛玻璃效果 */
+        color: #000000;
+        border-radius: 5px;
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+        backdrop-filter: blur(10px); /* 毛玻璃效果 */
+    }
+    .toast-show {
+        opacity: 1;
     }
 </style>
 {% endblock stylesheets %}
 
 {% block content %}
 <div class="content">
-    <div class="card card-custom">
-        <div class="model-section">
-            <div id="model-container"></div>
-        </div>
-        <div class="info-section">
-            <div class="card-body device-info">
-                <h2 class="card-title">设备详情</h2>
-                <h3><strong>无人机序列号:</strong> {{ device.drone_sn }}</h3>
-                <h3><strong>远程控制器序列号:</strong> {{ device.remote_sn }}</h3>
-                <h3><strong>工作区ID:</strong> {{ device.workspace_id }}</h3>
-                <h3><strong>设备状态:</strong> {{ device.status }}</h3>
-            </div>
-        </div>
+    <div id="mapContainer"></div>
+    <div class="control-panel">
+        <button><i class="fas fa-play"></i><span>开始作业</span></button>
+        <button><i class="fas fa-arrow-up"></i><span>起飞</span></button>
+        <button><i class="fas fa-pause"></i><span>暂停</span></button>
+        <button><i class="fas fa-undo"></i><span>返航</span></button>
+        <button><i class="fas fa-stop"></i><span>停止</span></button>
+        <button><i class="fas fa-arrow-down"></i><span>迫降</span></button>
+        <button><i class="fas fa-toggle-on"></i><span>开启摇杆</span></button>
+        <button><i class="fas fa-toggle-off"></i><span>关闭摇杆</span></button>
     </div>
+    <div id="toast" class="toast">更新位置: </div>
 </div>
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-<script>
-    // Basic setup
-    const container = document.getElementById('model-container');
-    const scene = new THREE.Scene();
-
-    const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-    camera.position.set(0, 1, 5); // 调整相机位置
-
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setClearColor(0x000000, 0); // 背景设为透明
-    container.appendChild(renderer.domElement);
-
-    // Lighting
-    const ambientLight = new THREE.AmbientLight(0x404040, 2); // soft white light
-    scene.add(ambientLight);
-
-    const lights = [];
-    lights[0] = new THREE.DirectionalLight(0xffffff, 1);
-    lights[0].position.set(1, 1, 1).normalize();
-    lights[1] = new THREE.DirectionalLight(0xffffff, 1);
-    lights[1].position.set(-1, 1, 1).normalize();
-    lights[2] = new THREE.DirectionalLight(0xffffff, 1);
-    lights[2].position.set(1, 1, -1).normalize();
-    lights[3] = new THREE.DirectionalLight(0xffffff, 1);
-    lights[3].position.set(-1, 1, -1).normalize();
-    lights[4] = new THREE.DirectionalLight(0xffffff, 1);
-    lights[4].position.set(0, 1, 0).normalize();
-
-    for (let i = 0; i < lights.length; i++) {
-        scene.add(lights[i]);
-    }
-
-    const pointLights = [];
-    pointLights[0] = new THREE.PointLight(0xffffff, 0.5);
-    pointLights[0].position.set(2, 2, 2);
-    pointLights[1] = new THREE.PointLight(0xffffff, 0.5);
-    pointLights[1].position.set(-2, 2, 2);
-    pointLights[2] = new THREE.PointLight(0xffffff, 0.5);
-    pointLights[2].position.set(2, 2, -2);
-    pointLights[3] = new THREE.PointLight(0xffffff, 0.5);
-    pointLights[3].position.set(-2, 2, -2);
-
-    for (let i = 0; i < pointLights.length; i++) {
-        scene.add(pointLights[i]);
-    }
-
-    let model;
-    // Load model
-    const loader = new THREE.GLTFLoader();
-    loader.load('{{ ASSETS_ROOT }}/model/mav_3_pro_unfold.glb', function (gltf) {
-        model = gltf.scene;
-        model.scale.set(12,12,12); // 调整缩放比例
-        model.position.y += 1; // 提高模型位置
-        model.rotation.x = Math.PI / 8; // 设定初始旋转角度
-        model.rotation.y = Math.PI / -6; // 设定初始旋转角度
-        model.rotation.z = 0; // 设定初始旋转角度
-        scene.add(model);
-        animate();
-    }, undefined, function (error) {
-        console.error(error);
+<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=你的高德地图API密钥"></script>
+<script type="text/javascript">
+    var map = new AMap.Map('mapContainer', {
+        resizeEnable: true,
+        center: [119.24547, 32.26518], // 地图中心点
+        zoom: 15, // 地图缩放级别
+        mapStyle: 'amap://styles/dark' // 深色主题样式
     });
 
-    camera.position.z = 5; // 调整相机位置
+    // 默认标记图标
+    var defaultIcon = new AMap.Icon({
+        size: new AMap.Size(25, 34), // 默认图标大小
+        image: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_r.png', // 图标的URL
+        imageSize: new AMap.Size(25, 34) // 图标实际大小
+    });
 
-    // Animate function
-    function animate() {
-        requestAnimationFrame(animate);
-        if (model) {
-            model.rotation.y += 0.01; // 模型自动旋转
+    // 高亮标记图标
+    var highlightIcon = new AMap.Icon({
+        size: new AMap.Size(35, 48), // 高亮图标大小
+        image: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_r.png', // 图标的URL
+        imageSize: new AMap.Size(35, 48) // 图标实际大小
+    });
+
+    var marker = new AMap.Marker({
+        position: new AMap.LngLat(119.24547, 32.26518), // 标记的经纬度
+        title: '指定位置',
+        icon: defaultIcon,
+        offset: new AMap.Pixel(-12.5, -34), // 修正标记位置，使其底部中点对齐
+        anchor: 'bottom-center', // 锚点设置为底部中点
+        draggable: true // 使标记可拖动
+    });
+
+    // 将标记添加到地图上
+    map.add(marker);
+
+    // 鼠标悬停事件
+    marker.on('mouseover', function () {
+        marker.setIcon(highlightIcon);
+        marker.setOffset(new AMap.Pixel(-17.5, -48)); // 修正高亮标记位置
+        marker.setContent('<div class="marker-shadow marker-highlight"><img src="https://webapi.amap.com/theme/v1.3/markers/n/mark_r.png" style="width: 35px; height: 48px;"></div>'); // 添加阴影效果和高亮类
+    });
+
+    // 鼠标移出事件
+    marker.on('mouseout', function () {
+        marker.setIcon(defaultIcon);
+        marker.setOffset(new AMap.Pixel(-12.5, -34)); // 恢复默认标记位置
+        marker.setContent('<div class="marker-shadow marker-normal"><img src="https://webapi.amap.com/theme/v1.3/markers/n/mark_r.png" style="width: 25px; height: 34px;"></div>'); // 恢复默认阴影效果和正常类
+    });
+
+    // 动画移动标记
+    function animateMarker(marker, newPosition) {
+        var start = marker.getPosition();
+        var end = newPosition;
+        var startTime = performance.now();
+        var duration = 1000; // 动画持续时间 1 秒
+
+        function animate(time) {
+            var elapsed = time - startTime;
+            var fraction = Math.min(elapsed / duration, 1);
+            var lng = start.lng + (end.lng - start.lng) * fraction;
+            var lat = start.lat + (end.lat - start.lat) * fraction;
+            marker.setPosition(new AMap.LngLat(lng, lat));
+
+            if (fraction < 1) {
+                requestAnimationFrame(animate);
+            }
         }
-        renderer.render(scene, camera);
+
+        requestAnimationFrame(animate);
     }
 
-    // Handle window resize
-    window.addEventListener('resize', function () {
-        const width = container.clientWidth;
-        const height = container.clientHeight;
-        renderer.setSize(width, height);
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
+    // 拖动结束事件
+    marker.on('dragend', function (e) {
+        var newPosition = marker.getPosition();
+        var lng = newPosition.lng;
+        var lat = newPosition.lat;
+        showToast('更新位置: ' + lng.toFixed(6) + ', ' + lat.toFixed(6));
+        animateMarker(marker, newPosition);
     });
 
-    animate();
-</script>
+    // 显示 toast
+    function showToast(message) {
+        var toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.add('toast-show');
+        setTimeout(function () {
+            toast.classList.remove('toast-show');
+        }, 3000); // 3秒后隐藏
+    }
+    // 添加工具栏控件
+    AMap.plugin(['AMap.ToolBar'], function() {
+        var toolBar = new AMap.ToolBar();
+        map.addControl(toolBar);
+    });
+
+    // 添加比例尺控件
+    AMap.plugin(['AMap.Scale'], function() {
+        var scale = new AMap.Scale();
+        map.addControl(scale);
+    });
+
+    // 添加地图类型切换控件并设置默认类型为卫星图
+    AMap.plugin(['AMap.MapType'], function() {
+        var mapType = new AMap.MapType({
+            defaultType: 1 // 0表示默认标准图，1表示卫星图
+        });
+        map.addControl(mapType);
+    });
+
+    // 设置默认显示为卫星地图
+    map.setLayers([
+        new AMap.TileLayer.Satellite()
+    ]);
+    </script>
 {% endblock javascripts %}
