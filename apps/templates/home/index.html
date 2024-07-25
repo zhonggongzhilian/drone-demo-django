@@ -6,98 +6,156 @@
 {% block stylesheets %}
 <style>
     #mapContainer {
-        width: 100%;
-        height: 100vh; /* 调整地图高度为页面高度 */
-        border-radius: 15px; /* 设置四个角为圆角 */
-        overflow: hidden;
+    width: 100%;
+    height: 100vh; /* 调整地图高度为页面高度 */
+    border-radius: 15px; /* 设置四个角为圆角 */
+    overflow: hidden;
+}
+
+.content {
+    padding: 0;
+    margin: 0;
+}
+
+.card-container {
+    position: absolute;
+    right: 10px;
+    top: 150px; /* 离顶部 150px */
+    width: 20vw; /* 屏幕宽度的 1/5 */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.3); /* 半透明背景 */
+    border-radius: 15px;
+    backdrop-filter: blur(10px); /* 毛玻璃效果 */
+    padding: 10px;
+    z-index: 1000; /* 确保卡片在最前面 */
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.4); /* 卡片背景半透明效果 */
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 卡片阴影效果 */
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.card:hover {
+    background-color: rgba(255, 255, 255, 1); /* 鼠标悬停效果 */
+    transform: scale(1.05); /* 放大效果 */
+}
+
+.control-panel {
+    position: fixed;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    background-color: rgba(44, 62, 80, 0.4); /* 半透明背景 */
+    padding: 10px;
+    border-radius: 10px;
+    z-index: 999; /* 确保按钮在最前面 */
+    backdrop-filter: blur(10px); /* 毛玻璃效果 */
+}
+
+.control-panel button {
+    transition: background-color 0.3s, transform 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(44, 62, 80, 0.4); /* 按钮半透明背景 */
+    color: #ecf0f1;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.control-panel button i {
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.control-panel button:hover {
+    transform: scale(1.1);
+    background-color: rgba(44, 62, 80, 0.6); /* 按钮悬停效果 */
+}
+
+.marker-shadow {
+    filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.5));
+}
+
+.marker-highlight {
+    animation: markerGrow 0.3s forwards; /* 标记变大动画 */
+}
+
+.marker-normal {
+    animation: markerShrink 0.3s forwards; /* 标记缩小动画 */
+}
+
+@keyframes markerGrow {
+    from {
+        transform: scale(1);
     }
-    .content {
-        padding: 0;
-        margin: 0;
+    to {
+        transform: scale(1.4); /* 标记变大的比例 */
     }
-    .control-panel {
-        position: fixed;
-        bottom: 15px;
-        left: 50%;
-        transform: translateX(-50%);
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        background-color: rgba(44, 62, 80, 0.4); /* 半透明背景 */
-        padding: 10px;
-        border-radius: 10px;
-        z-index: 999; /* 确保按钮在最前面 */
-        backdrop-filter: blur(10px); /* 毛玻璃效果 */
+}
+
+@keyframes markerShrink {
+    from {
+        transform: scale(1.4); /* 缩小动画从大开始 */
     }
-    .control-panel button {
-        transition: background-color 0.3s, transform 0.3s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: rgba(44, 62, 80, 0.4); /* 按钮半透明背景 */
-        color: #ecf0f1;
-        border: none;
-        border-radius: 5px;
-        padding: 10px 20px;
-        font-size: 14px;
-        cursor: pointer;
+    to {
+        transform: scale(1); /* 缩小到原始大小 */
     }
-    .control-panel button i {
-        margin-right: 8px;
-        flex-shrink: 0;
-    }
-    .control-panel button:hover {
-        transform: scale(1.1);
-        background-color: rgba(44, 62, 80, 0.6); /* 按钮悬停效果 */
-    }
-    .marker-shadow {
-        filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.5));
-    }
-    .marker-highlight {
-        animation: markerGrow 0.3s forwards; /* 标记变大动画 */
-    }
-    .marker-normal {
-        animation: markerShrink 0.3s forwards; /* 标记缩小动画 */
-    }
-    @keyframes markerGrow {
-        from {
-            transform: scale(1);
-        }
-        to {
-            transform: scale(1.4); /* 标记变大的比例 */
-        }
-    }
-    @keyframes markerShrink {
-        from {
-            transform: scale(1.4); /* 缩小动画从大开始 */
-        }
-        to {
-            transform: scale(1); /* 缩小到原始大小 */
-        }
-    }
-    .toast {
-        position: fixed;
-        bottom: 80px; /* 位置高于 control-panel */
-        left: 50%;
-        transform: translateX(-50%);
-        padding: 10px 20px;
-        background-color: rgba(255, 255, 255, 0.7); /* 白色半透明毛玻璃效果 */
-        color: #000000;
-        border-radius: 5px;
-        z-index: 1000;
-        opacity: 0;
-        transition: opacity 0.3s ease-in-out;
-        backdrop-filter: blur(10px); /* 毛玻璃效果 */
-    }
-    .toast-show {
-        opacity: 1;
-    }
-</style>
+}
+
+.toast {
+    position: fixed;
+    bottom: 80px; /* 位置高于 control-panel */
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    background-color: rgba(255, 255, 255, 0.7); /* 白色半透明毛玻璃效果 */
+    color: #000000;
+    border-radius: 5px;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    backdrop-filter: blur(10px); /* 毛玻璃效果 */
+}
+
+.toast-show {
+    opacity: 1;
+}</style>
 {% endblock stylesheets %}
 
 {% block content %}
 <div class="content">
     <div id="mapContainer"></div>
+    <div class="card-container">
+        <div class="card">
+            <h3>区域信息</h3>
+            <p>区域名称：仪征大数据产业园</p>
+            <p>区域面积：20000平</p>
+            <p>设备数量：9</p>
+        </div>
+        <div class="card">
+            <h3>火点监测</h3>
+            <p>历史检测火点数：9</p>
+            <p>历史处理火点数：9</p>
+        </div>
+        <div class="card">
+            <h3>水污染监测</h3>
+            <p>历史水污染数：2</p>
+            <p>历史处理水污染数：2</p>
+        </div>
+    </div>
     <div class="control-panel">
         <button><i class="fas fa-play"></i><span>开始作业</span></button>
         <button><i class="fas fa-arrow-up"></i><span>起飞</span></button>
@@ -161,71 +219,71 @@
         marker.setIcon(defaultIcon);
         marker.setOffset(new AMap.Pixel(-12.5, -34)); // 恢复默认标记位置
         marker.setContent('<div class="marker-shadow marker-normal"><img src="https://webapi.amap.com/theme/v1.3/markers/n/mark_r.png" style="width: 25px; height: 34px;"></div>'); // 恢复默认阴影效果和正常类
-    });
-
+});
     // 动画移动标记
-    function animateMarker(marker, newPosition) {
-        var start = marker.getPosition();
-        var end = newPosition;
-        var startTime = performance.now();
-        var duration = 1000; // 动画持续时间 1 秒
+function animateMarker(marker, newPosition) {
+    var start = marker.getPosition();
+    var end = newPosition;
+    var startTime = performance.now();
+    var duration = 1000; // 动画持续时间 1 秒
 
-        function animate(time) {
-            var elapsed = time - startTime;
-            var fraction = Math.min(elapsed / duration, 1);
-            var lng = start.lng + (end.lng - start.lng) * fraction;
-            var lat = start.lat + (end.lat - start.lat) * fraction;
-            marker.setPosition(new AMap.LngLat(lng, lat));
+    function animate(time) {
+        var elapsed = time - startTime;
+        var fraction = Math.min(elapsed / duration, 1);
+        var lng = start.lng + (end.lng - start.lng) * fraction;
+        var lat = start.lat + (end.lat - start.lat) * fraction;
+        marker.setPosition(new AMap.LngLat(lng, lat));
 
-            if (fraction < 1) {
-                requestAnimationFrame(animate);
-            }
+        if (fraction < 1) {
+            requestAnimationFrame(animate);
         }
-
-        requestAnimationFrame(animate);
     }
 
-    // 拖动结束事件
-    marker.on('dragend', function (e) {
-        var newPosition = marker.getPosition();
-        var lng = newPosition.lng;
-        var lat = newPosition.lat;
-        showToast('更新位置: ' + lng.toFixed(6) + ', ' + lat.toFixed(6));
-        animateMarker(marker, newPosition);
-    });
+    requestAnimationFrame(animate);
+}
 
-    // 显示 toast
-    function showToast(message) {
-        var toast = document.getElementById('toast');
-        toast.textContent = message;
-        toast.classList.add('toast-show');
-        setTimeout(function () {
-            toast.classList.remove('toast-show');
-        }, 3000); // 3秒后隐藏
-    }
-    // 添加工具栏控件
-    AMap.plugin(['AMap.ToolBar'], function() {
-        var toolBar = new AMap.ToolBar();
-        map.addControl(toolBar);
-    });
+// 拖动结束事件
+marker.on('dragend', function (e) {
+    var newPosition = marker.getPosition();
+    var lng = newPosition.lng;
+    var lat = newPosition.lat;
+    showToast('更新位置: ' + lng.toFixed(6) + ', ' + lat.toFixed(6));
+    animateMarker(marker, newPosition);
+});
 
-    // 添加比例尺控件
-    AMap.plugin(['AMap.Scale'], function() {
-        var scale = new AMap.Scale();
-        map.addControl(scale);
-    });
+// 显示 toast
+function showToast(message) {
+    var toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('toast-show');
+    setTimeout(function () {
+        toast.classList.remove('toast-show');
+    }, 3000); // 3秒后隐藏
+}
 
-    // 添加地图类型切换控件并设置默认类型为卫星图
-    AMap.plugin(['AMap.MapType'], function() {
-        var mapType = new AMap.MapType({
-            defaultType: 1 // 0表示默认标准图，1表示卫星图
-        });
-        map.addControl(mapType);
-    });
+// 删除工具栏和比例尺控件
+// AMap.plugin(['AMap.ToolBar'], function() {
+//     var toolBar = new AMap.ToolBar();
+//     map.addControl(toolBar);
+// });
 
-    // 设置默认显示为卫星地图
-    map.setLayers([
-        new AMap.TileLayer.Satellite()
-    ]);
+// AMap.plugin(['AMap.Scale'], function() {
+//     var scale = new AMap.Scale();
+//     map.addControl(scale);
+// });
+
+// 添加地图类型切换控件并设置默认类型为卫星图
+AMap.plugin(['AMap.MapType'], function() {
+    var mapType = new AMap.MapType({
+        defaultType: 1 // 0表示默认标准图，1表示卫星图
+    });
+    map.addControl(mapType);
+});
+
+// 设置默认显示为卫星地图
+map.setLayers([
+    new AMap.TileLayer.Satellite()
+]);
+
     </script>
 {% endblock javascripts %}

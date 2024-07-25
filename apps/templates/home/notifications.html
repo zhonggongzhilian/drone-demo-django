@@ -1,134 +1,127 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Notifications {% endblock %} 
+{% block title %} 预警通知 {% endblock %}
+
+<!-- Load static files -->
+{% load static %}
 
 <!-- Specific Page CSS goes HERE  -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
+<style>
+  .content {
+    padding: 100px 20px; /* 与导航栏保持 100px 的间距，并在左右两边添加 20px 的空间 */
+  }
+  h1 {
+    text-align: center; /* 标题居中 */
+    margin-bottom: 20px; /* 标题下方的间距 */
+    font-size: 36px; /* 标题字体大小 */
+    color: #333; /* 标题颜色 */
+  }
+  .video-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 创建3列网格 */
+    grid-template-rows: repeat(2, 1fr); /* 创建2行网格 */
+    gap: 20px; /* 增大间距 */
+    width: 100%;
+  }
+  .video-wrapper {
+    position: relative;
+  }
+  .video-wrapper video {
+    width: 100%;
+    height: auto;
+    object-fit: cover; /* 保持视频比例 */
+    border-radius: 15px; /* 圆角效果 */
+    cursor: pointer; /* 鼠标悬停效果 */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* 平滑过渡效果 */
+  }
+  .video-wrapper video:hover {
+    transform: scale(1.05); /* 放大效果 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 阴影效果 */
+  }
+  .video-wrapper video::before {
+    content: '《预警信息》';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.5); /* 半透明毛玻璃效果 */
+    border-radius: 15px; /* 圆角效果，与视频一致 */
+    padding: 10px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none; /* 使遮罩层不会阻止鼠标事件 */
+    z-index: 10; /* 确保遮罩层在视频上方 */
+    transition: opacity 0.3s ease; /* 平滑过渡效果 */
+    opacity: 0; /* 初始状态为隐藏 */
+  }
+  .video-wrapper video:hover::before {
+    opacity: 1; /* 鼠标悬停时显示遮罩层 */
+  }
+  .video-info {
+    text-align: center; /* 信息居中 */
+    margin-top: 10px; /* 信息与视频的间距 */
+    font-size: 18px; /* 信息字体大小 */
+    color: #666; /* 信息颜色 */
+  }
+</style>
+{% endblock stylesheets %}
 
 {% block content %}
-
   <div class="content">
-    <div class="row">
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-header">
-            <h4 class="card-title">Notifications Style</h4>
-          </div>
-          <div class="card-body">
-            <div class="alert alert-info">
-              <span>This is a plain notification</span>
-            </div>
-            <div class="alert  alert-info">
-              <button type="button" aria-hidden="true" class="close" data-dismiss="alert" aria-label="Close">
-                <i class="tim-icons icon-simple-remove"></i>
-              </button>
-              <span>This is a notification with close button.</span>
-            </div>
-            <div class="alert alert-info alert-with-icon" data-notify="container">
-              <button type="button" aria-hidden="true" class="close" data-dismiss="alert" aria-label="Close">
-                <i class="tim-icons icon-simple-remove"></i>
-              </button>
-              <span data-notify="icon" class="tim-icons icon-bell-55"></span>
-              <span data-notify="message">This is a notification with close button and icon.</span>
-            </div>
-            <div class="alert alert-info alert-with-icon" data-notify="container">
-              <button type="button" aria-hidden="true" class="close" data-dismiss="alert" aria-label="Close">
-                <i class="tim-icons icon-simple-remove"></i>
-              </button>
-              <span data-notify="icon" class="tim-icons icon-bell-55"></span>
-              <span data-notify="message">This is a notification with close button and icon and have many lines. You can see that the icon and the close button are always vertically aligned. This is a beautiful notification. So you don't have to worry about the style.</span>
-            </div>
-          </div>
-        </div>
+    <h1>预警信息</h1>
+    <div class="video-container">
+      <div class="video-wrapper">
+        <video autoplay loop muted>
+          <source src="{% static 'assets/img/notification_fire.mp4' %}" type="video/mp4">
+          您的浏览器不支持 video 标签。
+        </video>
+        <div class="video-info">火情监控</div>
       </div>
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-header">
-            <h4 class="card-title">Notification states</h4>
-          </div>
-          <div class="card-body">
-            <div class="alert alert-primary">
-              <button type="button" aria-hidden="true" class="close" data-dismiss="alert" aria-label="Close">
-                <i class="tim-icons icon-simple-remove"></i>
-              </button>
-              <span><b> Primary - </b> This is a regular notification made with ".alert-primary"</span>
-            </div>
-            <div class="alert alert-info">
-              <button type="button" aria-hidden="true" class="close" data-dismiss="alert" aria-label="Close">
-                <i class="tim-icons icon-simple-remove"></i>
-              </button>
-              <span><b> Info - </b> This is a regular notification made with ".alert-info"</span>
-            </div>
-            <div class="alert alert-success">
-              <button type="button" aria-hidden="true" class="close" data-dismiss="alert" aria-label="Close">
-                <i class="tim-icons icon-simple-remove"></i>
-              </button>
-              <span><b> Success - </b> This is a regular notification made with ".alert-success"</span>
-            </div>
-            <div class="alert alert-warning">
-              <button type="button" aria-hidden="true" class="close" data-dismiss="alert" aria-label="Close">
-                <i class="tim-icons icon-simple-remove"></i>
-              </button>
-              <span><b> Warning - </b> This is a regular notification made with ".alert-warning"</span>
-            </div>
-            <div class="alert alert-danger">
-              <button type="button" aria-hidden="true" class="close" data-dismiss="alert" aria-label="Close">
-                <i class="tim-icons icon-simple-remove"></i>
-              </button>
-              <span><b> Danger - </b> This is a regular notification made with ".alert-danger"</span>
-            </div>
-          </div>
-        </div>
+      <div class="video-wrapper">
+        <video autoplay loop muted>
+          <source src="{% static 'assets/img/notification_water_pollution.mp4' %}" type="video/mp4">
+          您的浏览器不支持 video 标签。
+        </video>
+        <div class="video-info">水体污染</div>
       </div>
-      <div class="col-md-12">
-        <div class="card">
-          <div class="card-body">
-            <div class="places-buttons">
-              <div class="row">
-                <div class="col-md-6 ml-auto mr-auto text-center">
-                  <h4 class="card-title">
-                    Notifications Places
-                    <p class="category">Click to view notifications</p>
-                  </h4>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-lg-8 ml-auto mr-auto">
-                  <div class="row">
-                    <div class="col-md-4">
-                      <button class="btn btn-primary btn-block" onclick="demo.showNotification('top','left')">Top Left</button>
-                    </div>
-                    <div class="col-md-4">
-                      <button class="btn btn-primary btn-block" onclick="demo.showNotification('top','center')">Top Center</button>
-                    </div>
-                    <div class="col-md-4">
-                      <button class="btn btn-primary btn-block" onclick="demo.showNotification('top','right')">Top Right</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-lg-8 ml-auto mr-auto">
-                  <div class="row">
-                    <div class="col-md-4">
-                      <button class="btn btn-primary btn-block" onclick="demo.showNotification('bottom','left')">Bottom Left</button>
-                    </div>
-                    <div class="col-md-4">
-                      <button class="btn btn-primary btn-block" onclick="demo.showNotification('bottom','center')">Bottom Center</button>
-                    </div>
-                    <div class="col-md-4">
-                      <button class="btn btn-primary btn-block" onclick="demo.showNotification('bottom','right')">Bottom Right</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="video-wrapper">
+        <video autoplay loop muted>
+          <source src="{% static 'assets/img/notification_air_pollution.mp4' %}" type="video/mp4">
+          您的浏览器不支持 video 标签。
+        </video>
+        <div class="video-info">空气质量</div>
+      </div>
+      <div class="video-wrapper">
+        <video autoplay loop muted>
+          <source src="{% static 'assets/img/notification_traffic.mp4' %}" type="video/mp4">
+          您的浏览器不支持 video 标签。
+        </video>
+        <div class="video-info">交通拥堵</div>
+      </div>
+      <div class="video-wrapper">
+        <video autoplay loop muted>
+          <source src="{% static 'assets/img/notification_flood.mp4' %}" type="video/mp4">
+          您的浏览器不支持 video 标签。
+        </video>
+        <div class="video-info">洪水灾情</div>
+      </div>
+      <div class="video-wrapper">
+        <video autoplay loop muted>
+          <source src="{% static 'assets/img/notification_building.mp4' %}" type="video/mp4">
+          您的浏览器不支持 video 标签。
+        </video>
+        <div class="video-info">违章建筑</div>
       </div>
     </div>
   </div>
-
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
