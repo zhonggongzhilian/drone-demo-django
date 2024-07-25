@@ -22,11 +22,5 @@ class EditProfileForm(forms.ModelForm):
 class DroneForm(forms.ModelForm):
     class Meta:
         model = Drone
-        fields = ['drone_model', 'drone_sn', 'remote_sn', 'workspace_id', 'status']
-        widgets = {
-            'drone_model': forms.Select(attrs={'class': 'form-control'}),
-            'drone_sn': forms.TextInput(attrs={'class': 'form-control'}),
-            'remote_sn': forms.TextInput(attrs={'class': 'form-control'}),
-            'workspace_id': forms.TextInput(attrs={'class': 'form-control'}),
-            'status': forms.Select(attrs={'class': 'form-control'}),
-        }
+        fields = ['drone_model', 'drone_sn', 'remote_sn', 'workspace_id', 'status', 'longitude', 'latitude']
+

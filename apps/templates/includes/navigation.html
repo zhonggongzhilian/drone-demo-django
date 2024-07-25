@@ -22,13 +22,13 @@
                 <li class="nav-item {% if 'index' in segment %} active {% endif %}">
                     <a href="/" class="nav-link" style="display: flex; align-items: center;">
                         <i class="fas fa-map-marked-alt" style="font-size: 24px;"></i> <!-- 更换为地图图标 -->
-                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">地图模式</h5>
+                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">地图纵览</h5>
                     </a>
                 </li>
                 <li class="nav-item {% if 'live' in segment %} active {% endif %}">
                     <a href="{% url 'live_view' %}" class="nav-link" style="display: flex; align-items: center;">
                         <i class="fas fa-video" style="font-size: 24px;"></i> <!-- 更换为视频图标 -->
-                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">直播模式</h5>
+                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">监控管理</h5>
                     </a>
                 </li>
                 <li class="nav-item {% if 'user' in segment %} active {% endif %}">
@@ -44,13 +44,13 @@
                     </a>
                 </li>
                 <li class="nav-item {% if 'notifications' in segment %} active {% endif %}">
-                    <a href="/notifications.html" class="nav-link" style="display: flex; align-items: center;">
+                    <a href="{% url 'notifications' %}" class="nav-link" style="display: flex; align-items: center;">
                         <i class="fas fa-bell" style="font-size: 24px;"></i> <!-- 更换为通知图标 -->
                         <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">预警信息</h5>
                     </a>
                 </li>
                 <li class="nav-item {% if 'tables' in segment %} active {% endif %}">
-                    <a href="/tables.html" class="nav-link" style="display: flex; align-items: center;">
+                    <a href="{% url 'admin_dashboard' %}" class="nav-link" style="display: flex; align-items: center;">
                         <i class="fas fa-cogs" style="font-size: 24px;"></i> <!-- 更换为设置图标 -->
                         <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">后台管理</h5>
                     </a>

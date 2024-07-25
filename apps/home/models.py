@@ -24,16 +24,19 @@ class Drone(models.Model):
     ]
 
     STATUS_CHOICES = [
-        ('online', '在线'),
-        ('offline', '离线'),
+        ('active', '在线'),
+        ('inactive', '离线'),
+        ('maintenance', '维护中'),
     ]
 
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     drone_model = models.CharField(max_length=50, choices=DRONE_MODELS)
-    drone_sn = models.CharField(max_length=50, unique=True)
-    remote_sn = models.CharField(max_length=50)
-    workspace_id = models.CharField(max_length=50)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES)
+    drone_sn = models.CharField(max_length=100)
+    remote_sn = models.CharField(max_length=100)
+    workspace_id = models.CharField(max_length=100)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    longitude = models.FloatField(default=119.24547)
+    latitude = models.FloatField(default=32.26518)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.drone_sn

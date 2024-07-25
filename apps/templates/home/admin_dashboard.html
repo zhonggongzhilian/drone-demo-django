@@ -1,0 +1,244 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}后台管理{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .content {
+        width: 80%;
+        margin: 0 auto; /* 居中 */
+        padding-top: 100px; /* 顶部空间以免被导航栏遮挡 */
+    }
+    .card {
+        padding: 20px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+    th {
+        background-color: #f4f4f4;
+        text-align: left;
+    }
+    .actions {
+        margin-bottom: 20px;
+    }
+    .video-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        object-fit: cover;
+    }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+<video class="video-background" autoplay loop muted>
+    <source src="{{ ASSETS_ROOT }}/img/bgv.mp4" type="video/mp4">
+    您的浏览器不支持视频标签。
+</video>
+
+<div class="content">
+    <!-- 用户信息卡片 -->
+    <div class="card">
+        <h4>用户信息</h4>
+        <div class="actions">
+            <button class="btn btn-primary" onclick="addUser()">新增</button>
+            <button class="btn btn-danger" onclick="deleteSelected()">删除</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th><input type="checkbox" onclick="toggleAll(this)"></th>
+                    <th>序号</th>
+                    <th>用户名</th>
+                    <th>全名</th>
+                    <th>邮箱</th>
+                    <th>电话</th>
+                    <th>上次登录时间</th>
+                    <th>管理员</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td><input type="checkbox" class="user-checkbox" data-id="{{ user.id }}"></td>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.full_name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.phone_number }}</td>
+                    <td>{{ user.last_login }}</td>
+                    <td>{{ user.is_admin|yesno:"是,否" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 历史设备卡片 -->
+    <div class="card">
+        <h4>历史设备</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>无人机型号</th>
+                    <th>无人机序列号</th>
+                    <th>远程控制器序列号</th>
+                    <th>工作区ID</th>
+                    <th>设备状态</th>
+                    <th>用户</th>
+                    <th>经度</th>
+                    <th>纬度</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for drone in drones %}
+                <tr>
+                    <td>{{ drone.drone_model }}</td>
+                    <td>{{ drone.drone_sn }}</td>
+                    <td>{{ drone.remote_sn }}</td>
+                    <td>{{ drone.workspace_id }}</td>
+                    <td>{{ drone.status }}</td>
+                    <td>{{ drone.user.username }}</td>
+                    <td>{{ drone.longitude }}</td>
+                    <td>{{ drone.latitude }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 通知信息卡片 -->
+    <div class="card">
+        <h4>通知信息</h4>
+        <ul>
+            {% for notification in notifications %}
+            <li>{{ notification }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<!-- 模态框，用于添加用户 -->
+<div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUserModalLabel">新增用户</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addUserForm">
+                    <div class="form-group">
+                        <label for="username">用户名</label>
+                        <input type="text" class="form-control" id="username" name="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="full_name">全名</label>
+                        <input type="text" class="form-control" id="full_name" name="full_name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">邮箱</label>
+                        <input type="email" class="form-control" id="email" name="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone_number">电话</label>
+                        <input type="text" class="form-control" id="phone_number" name="phone_number">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">密码</label>
+                        <input type="password" class="form-control" id="password" name="password">
+                    </div>
+                    <div class="form-group">
+                        <label for="is_admin">管理员</label>
+                        <select class="form-control" id="is_admin" name="is_admin">
+                            <option value="false">否</option>
+                            <option value="true">是</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick="submitAddUser()">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+<script>
+    function toggleAll(source) {
+        checkboxes = document.querySelectorAll('.user-checkbox');
+        for (var i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].checked = source.checked;
+        }
+    }
+
+    function addUser() {
+        $('#addUserModal').modal('show');
+    }
+
+    function submitAddUser() {
+        var form = document.getElementById('addUserForm');
+        var formData = new FormData(form);
+
+        fetch("{% url 'add_user' %}", {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        }).then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('添加用户失败');
+            }
+        });
+    }
+
+    function deleteSelected() {
+        var selected = [];
+        document.querySelectorAll('.user-checkbox:checked').forEach(function(checkbox) {
+            selected.push(checkbox.getAttribute('data-id'));
+        });
+
+        if (selected.length > 0) {
+            fetch("{% url 'delete_users' %}", {
+                method: 'POST',
+                body: JSON.stringify({ids: selected}),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            }).then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('删除用户失败');
+                }
+            });
+        } else {
+            alert('请选择要删除的用户');
+        }
+    }
+</script>
+{% endblock javascripts %}

@@ -36,6 +36,8 @@ BACKEND_URL = 'http://1.13.23.62:5000'
 
 AUTH_USER_MODEL = 'home.CustomUser'
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

@@ -5,6 +5,7 @@ Copyright (c) 2019 - present AppSeed.us
 
 from django.urls import path, re_path
 from apps.home import views
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
 
@@ -21,8 +22,14 @@ urlpatterns = [
     path('live/', views.live_view, name='live_view'),
     path('edit_profile/', views.edit_profile, name='edit_profile'),
     path('add_drone/', views.add_drone, name='add_drone'),
+    path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='/login/'), name='logout'),
+    path('add_user/', views.add_user, name='add_user'),
+    path('delete_users/', views.delete_users, name='delete_users'),
+    path('notifications/', views.get_notifications, name='notifications'),
+
     # Matches any html file
-    re_path(r'^.*\.*', views.pages, name='pages'),
+    # re_path(r'^.*\.*', views.pages, name='pages'),
 
 
 ]

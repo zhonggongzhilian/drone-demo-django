@@ -10,6 +10,7 @@ import requests
 from django import template
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.http import JsonResponse
@@ -20,6 +21,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .forms import DroneForm
 from .forms import EditProfileForm
+from .models import CustomUser
 from .models import Drone
 
 logger = logging.getLogger(__name__)
@@ -230,7 +232,7 @@ def upload_avatar(request):
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
-def device_list(request):
+def _device_list(request):
     devices = [
         {'drone_sn': '1581F5FHD23BP00DP8VH', 'remote_sn': '5YSZLBH0034M17', 'workspace_id': 'Not Given',
          'status': '在线'},
@@ -247,43 +249,24 @@ def device_list(request):
 
 
 @login_required
-def _device_list(request):
-    user = request.user
-    devices = Drone.objects.filter(user=user)
+def device_list(request):
+    devices = Drone.objects.filter(user=request.user)
+    print(devices)
+    return render(request, 'home/device_list.html', {'devices': devices})
 
-    if request.method == "POST":
+
+@login_required
+def add_drone(request):
+    if request.method == 'POST':
         form = DroneForm(request.POST)
         if form.is_valid():
             drone = form.save(commit=False)
-            drone.user = user
+            drone.user = request.user
             drone.save()
             return redirect('device_list')
     else:
         form = DroneForm()
-    for d in devices:
-        print(d.drone_model)
-    return render(request, 'home/device_list.html', {'devices': devices, 'form': form})
-
-
-@login_required(login_url="/login/")
-def add_drone(request):
-    if request.method == 'POST':
-        drone_model = request.POST.get('drone_model')
-        drone_sn = request.POST.get('drone_sn')
-        remote_sn = request.POST.get('remote_sn')
-        workspace_id = request.POST.get('workspace_id')
-        status = request.POST.get('status')
-
-        Drone.objects.create(
-            drone_model=drone_model,
-            drone_sn=drone_sn,
-            remote_sn=remote_sn,
-            workspace_id=workspace_id,
-            status=status,
-            user=request.user
-        )
-        return redirect(reverse('device_list'))
-    return redirect(reverse('device_list'))
+    return render(request, 'home/add_drone.html', {'form': form})
 
 
 def live_view(request):
@@ -314,3 +297,68 @@ def edit_profile(request):
     else:
         form = EditProfileForm(instance=request.user)
     return render(request, 'home/user.html', {'form': form})
+
+
+# 确保只有管理员可以访问
+# @staff_member_required(login_url='/login/')
+def admin_dashboard(request):
+    User = get_user_model()
+    users = User.objects.all()
+    context = {'users': users}
+    return render(request, 'home/admin_dashboard.html', context)
+
+
+# 后台管理页面
+def admin_dashboard(request):
+    users = CustomUser.objects.all()
+    drones = Drone.objects.all()
+    notifications = []  # 添加通知信息
+    return render(request, 'home/admin_dashboard.html', {
+        'users': users,
+        'drones': drones,
+        'notifications': notifications
+    })
+
+
+# 添加用户
+@csrf_exempt
+def add_user(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        full_name = request.POST.get('full_name')
+        email = request.POST.get('email')
+        phone_number = request.POST.get('phone_number')
+        password = request.POST.get('password')
+
+        if not all([username, full_name, email, phone_number, password]):
+            return JsonResponse({'success': False, 'message': '所有字段都是必填的'})
+
+        if CustomUser.objects.filter(username=username).exists():
+            return JsonResponse({'success': False, 'message': '用户名已存在'})
+
+        user = CustomUser.objects.create_user(
+            username=username,
+            full_name=full_name,
+            email=email,
+            phone_number=phone_number,
+            password=password
+        )
+
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'message': '无效的请求方法'})
+
+
+# 删除用户
+@csrf_exempt
+def delete_users(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        ids = data.get('ids', [])
+        CustomUser.objects.filter(id__in=ids).delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'message': '无效的请求方法'})
+
+
+def get_notifications(request):
+    print("get notifications!")
+    return render(request, 'home/notifications.html')
