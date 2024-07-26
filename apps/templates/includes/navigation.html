@@ -15,57 +15,48 @@
                 </div>
                 <div class="photo" style="display: flex; align-items: center; height: 60px;">
                     <img src="{{ ASSETS_ROOT }}/img/zgzl.png" alt="Profile Photo" style="object-fit: contain; margin-right: 15px;">
-                    <a class="navbar-brand" href="javascript:void(0)" style="font-size: 24px; flex-shrink: 0; margin-left: 36px;">中工智联 ｜ AI 智能无人机巡检系统</a>
+                    <a class="navbar-brand" href="javascript:void(0)" style="font-size: 24px; flex-shrink: 0; margin-left: 36px; color: #ffffff; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);">中工智联 ｜ AI 智能无人机巡检系统</a>
                 </div>
             </div>
             <ul class="navbar-nav mx-auto" style="display: flex; align-items: center;">
                 <li class="nav-item {% if 'index' in segment %} active {% endif %}">
                     <a href="/" class="nav-link" style="display: flex; align-items: center;">
-                        <i class="fas fa-map-marked-alt" style="font-size: 24px;"></i> <!-- 更换为地图图标 -->
-                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">地图纵览</h5>
+                        <i class="fas fa-map-marked-alt" style="font-size: 24px; color: #ffffff;"></i> <!-- 更换为地图图标 -->
+                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px; color: #ffffff; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);">地图纵览</h5>
                     </a>
                 </li>
                 <li class="nav-item {% if 'live' in segment %} active {% endif %}">
                     <a href="{% url 'live_view' %}" class="nav-link" style="display: flex; align-items: center;">
-                        <i class="fas fa-video" style="font-size: 24px;"></i> <!-- 更换为视频图标 -->
-                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">监控管理</h5>
+                        <i class="fas fa-video" style="font-size: 24px; color: #ffffff;"></i> <!-- 更换为视频图标 -->
+                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px; color: #ffffff; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);">监控管理</h5>
                     </a>
                 </li>
                 <li class="nav-item {% if 'device_list' in segment %} active {% endif %}">
                     <a href="{% url 'device_list' %}" class="nav-link" style="display: flex; align-items: center;">
-                        <i class="fas fa-desktop" style="font-size: 24px;"></i> <!-- 更换为无人机图标 -->
-                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">设备详情</h5>
+                        <i class="fas fa-desktop" style="font-size: 24px; color: #ffffff;"></i> <!-- 更换为无人机图标 -->
+                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px; color: #ffffff; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);">设备详情</h5>
                     </a>
                 </li>
                 <li class="nav-item {% if 'notifications' in segment %} active {% endif %}">
                     <a href="{% url 'notifications' %}" class="nav-link" style="display: flex; align-items: center;">
-                        <i class="fas fa-bell" style="font-size: 24px;"></i> <!-- 更换为通知图标 -->
-                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">预警信息</h5>
+                        <i class="fas fa-bell" style="font-size: 24px; color: #ffffff;"></i> <!-- 更换为通知图标 -->
+                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px; color: #ffffff; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);">预警信息</h5>
                     </a>
                 </li>
                 <li class="nav-item {% if 'user' in segment %} active {% endif %}">
                     <a href="{% url 'user_data' %}" class="nav-link" style="display: flex; align-items: center;">
-                        <i class="fas fa-user-circle" style="font-size: 24px;"></i> <!-- 更换为用户图标 -->
-                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">账户设置</h5>
+                        <i class="fas fa-user-circle" style="font-size: 24px; color: #ffffff;"></i> <!-- 更换为用户图标 -->
+                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px; color: #ffffff; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);">账户设置</h5>
                     </a>
                 </li>
                 {% if user.is_admin %} <!-- 仅显示“后台管理”按钮如果用户是管理员 -->
                 <li class="nav-item {% if 'tables' in segment %} active {% endif %}">
                     <a href="{% url 'admin_dashboard' %}" class="nav-link" style="display: flex; align-items: center;">
-                        <i class="fas fa-cogs" style="font-size: 24px;"></i> <!-- 更换为设置图标 -->
-                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">后台管理</h5>
+                        <i class="fas fa-cogs" style="font-size: 24px; color: #ffffff;"></i> <!-- 更换为设置图标 -->
+                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px; color: #ffffff; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);">后台管理</h5>
                     </a>
                 </li>
                 {% endif %}
-            </ul>
-            <ul class="navbar-nav" style="display: flex; align-items: center;">
-                <li class="input-group d-flex align-items-center mb-0">
-                    <label class="switch theme-switch">
-                        <input type="checkbox" class="bsc" checked="">
-                        <span class="slider"></span>
-                    </label>
-                </li>
-                <li class="separator d-lg-none"></li>
             </ul>
         </div>
     </div>
@@ -76,14 +67,25 @@
     .nav-link {
         transition: background-color 0.3s, transform 0.3s;
         border-radius: 8px; /* 设置圆角 */
-        padding: 5px 10px; /* 添加内边距使按钮更显著 */
+        padding: 8px 15px; /* 添加内边距使按钮更显著 */
+        color: #ffffff; /* 设置文本颜色为白色 */
+        font-weight: 500; /* 设置文本粗细 */
     }
     .nav-link:hover {
-        transform: scale(1.1);
+        transform: scale(1.05);
         background-color: rgba(0, 123, 255, 0.1); /* 悬停时浅蓝色背景 */
     }
     .nav-link:active {
         background-color: rgba(0, 123, 255, 0.2); /* 点击时稍深的蓝色背景 */
         transform: scale(0.95); /* 点击时稍微缩小 */
+    }
+    .navbar-toggler {
+        border: none; /* 隐藏切换按钮边框 */
+    }
+    .navbar-toggler-bar {
+        background-color: #007bff; /* 切换按钮条纹颜色 */
+    }
+    .navbar-brand, .nav-link h5 {
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* 添加文字阴影 */
     }
 </style>

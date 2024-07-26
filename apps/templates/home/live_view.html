@@ -26,22 +26,29 @@
 }
 
 .video-wrapper {
+  position: relative;
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: center; /* 居中对齐视频元素 */
-  align-items: center; /* 垂直居中视频元素 */
+  justify-content: center; /* 居中对齐视频和图片 */
+  align-items: center; /* 垂直居中 */
 }
 
 .video-element, .img-element {
+  position: absolute; /* 绝对定位，使图片和视频叠加 */
   width: 100%;
   height: 100%;
-  object-fit: cover; /* 保持视频和图片的比例 */
-  cursor: pointer; /* 添加鼠标悬停效果 */
+  object-fit: cover; /* 保持比例 */
+  cursor: pointer; /* 鼠标悬停效果 */
 }
 
-.video-element:hover, .img-element:hover {
-  /* 鼠标悬停效果 */
+.img-element {
+  z-index: 1; /* 确保图片在视频下方 */
+}
+
+.video-element {
+  z-index: 2; /* 确保视频在图片上方 */
+  display: none; /* 默认隐藏视频 */
 }
 
 .card-container {
@@ -109,47 +116,51 @@
 
 {% block content %}
 <div class="content">
-  <div id="app" class="video-container">
+  <div class="video-container">
     <div class="video-wrapper">
-      <video ref="videoElement" v-show="showVideo" controls class="video-element"></video>
-      <img src="{{ ASSETS_ROOT }}/img/video_feed.jpeg" v-show="!showVideo" alt="Video Stream" class="img-element" />
+      <video id="videoElement" controls class="video-element"></video>
+      <img src="http://1.13.23.62:6060/video_feed" id="imageElement" alt="Video Stream" class="img-element" />
     </div>
     <div class="card-container">
-      {% for drone in drones %}
-      <div class="card-info">
+      <select id="droneSelect" class="card-info">
+        <option value="">选择无人机</option>
+        {% for drone in drones %}
+        <option value="{{ drone.drone_sn }}">{{ drone.drone_sn }}</option>
+        {% endfor %}
+      </select>
+      <div id="droneInfo" class="card-info">
         <div class="card-title">无人机信息</div>
         <table class="card-table">
           <tr>
             <th>无人机名称</th>
-            <td>{{ drone.drone_model }}</td>
+            <td id="droneModel">---</td>
           </tr>
           <tr>
             <th>无人机编号</th>
-            <td>{{ drone.drone_sn }}</td>
+            <td id="droneSn">---</td>
           </tr>
           <tr>
             <th>远程编号</th>
-            <td>{{ drone.remote_sn }}</td>
+            <td id="remoteSn">---</td>
           </tr>
           <tr>
             <th>工作空间ID</th>
-            <td>{{ drone.workspace_id }}</td>
+            <td id="workspaceId">---</td>
           </tr>
           <tr>
             <th>状态</th>
-            <td>{{ drone.get_status_display }}</td>
+            <td id="status">---</td>
           </tr>
           <tr>
             <th>经度</th>
-            <td>{{ drone.longitude }}</td>
+            <td id="longitude">---</td>
           </tr>
           <tr>
             <th>纬度</th>
-            <td>{{ drone.latitude }}</td>
+            <td id="latitude">---</td>
           </tr>
         </table>
       </div>
-      {% endfor %}
       <div class="card-info">
         <div class="card-title">预警信息</div>
         <table class="card-table">
@@ -166,42 +177,96 @@
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script>
-new Vue({
-  el: '#app',
-  data() {
-    return {
-      showVideo: false, // Initially, try to show the video. If you want to show the image, set showVideo to false.
-    };
-  },
-  methods: {
-    openFullScreen(videoUrl) {
-      window.location.href = `/full_screen_video?url=${encodeURIComponent(videoUrl)}`;
-    }
-  },
-  mounted() {
-    const videoElement = this.$refs.videoElement;
+document.addEventListener('DOMContentLoaded', function() {
+  const videoElement = document.getElementById('videoElement');
+  const imageElement = document.getElementById('imageElement');
+  const droneSelect = document.getElementById('droneSelect');
+  const droneModel = document.getElementById('droneModel');
+  const droneSn = document.getElementById('droneSn');
+  const remoteSn = document.getElementById('remoteSn');
+  const workspaceId = document.getElementById('workspaceId');
+  const status = document.getElementById('status');
+  const longitude = document.getElementById('longitude');
+  const latitude = document.getElementById('latitude');
 
-    if (Hls.isSupported()) {
-      const hls = new Hls();
-      hls.loadSource('http://192.168.43.21/hls/stream.m3u8');
-      hls.attachMedia(videoElement);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        videoElement.play();
-        this.showVideo = true; // Show the video element if HLS is supported and loaded
-      });
-    } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-      videoElement.src = 'http://192.168.43.21/hls/stream.m3u8';
-      videoElement.addEventListener('loadedmetadata', () => {
-        videoElement.play();
-        this.showVideo = true; // Show the video element if the browser can play HLS natively
-      });
+  // 从后端传递的无人机数据
+  const drones = [
+    {% for drone in drones %}
+    {
+      drone_sn: "{{ drone.drone_sn }}",
+      drone_model: "{{ drone.drone_model }}",
+      remote_sn: "{{ drone.remote_sn }}",
+      workspace_id: "{{ drone.workspace_id }}",
+      status: "{{ drone.get_status_display }}",
+      longitude: "{{ drone.longitude }}",
+      latitude: "{{ drone.latitude }}"
+    },
+    {% endfor %}
+  ];
+
+  // 更新无人机信息显示
+  function updateDroneInfo(selectedSn) {
+    const drone = drones.find(d => d.drone_sn === selectedSn);
+    if (drone) {
+      droneModel.textContent = drone.drone_model || '---';
+      droneSn.textContent = drone.drone_sn || '---';
+      remoteSn.textContent = drone.remote_sn || '---';
+      workspaceId.textContent = drone.workspace_id || '---';
+      status.textContent = drone.status || '---';
+      longitude.textContent = drone.longitude || '---';
+      latitude.textContent = drone.latitude || '---';
     } else {
-      // If neither HLS nor native playback is supported, show the image element
-      this.showVideo = false;
+      droneModel.textContent = '---';
+      droneSn.textContent = '---';
+      remoteSn.textContent = '---';
+      workspaceId.textContent = '---';
+      status.textContent = '---';
+      longitude.textContent = '---';
+      latitude.textContent = '---';
     }
+  }
+
+  // 处理无人机选择变化事件
+  droneSelect.addEventListener('change', function() {
+    updateDroneInfo(droneSelect.value);
+  });
+
+  if (Hls.isSupported()) {
+    const hls = new Hls({
+      // 适应性比特率配置
+      maxMaxBufferLength: 30, // 最大缓存时间（秒）
+      startLevel: 0, // 从最低质量开始
+      capLevelToPlayerSize: true // 限制流质量适应播放器大小
+    });
+    hls.loadSource('http://192.168.43.21/hls/stream.m3u8');
+    hls.attachMedia(videoElement);
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      videoElement.play();
+      imageElement.style.display = 'none'; // 隐藏图片
+      videoElement.style.display = 'block'; // 显示视频
+    });
+    hls.on(Hls.Events.ERROR, (event, data) => {
+      if (data.fatal === Hls.ErrorTypes.NETWORK_ERROR) {
+        imageElement.style.display = 'block';
+        videoElement.style.display = 'none';
+      }
+    });
+  } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+    videoElement.src = 'http://192.168.43.21/hls/stream.m3u8';
+    videoElement.addEventListener('loadedmetadata', () => {
+      videoElement.play();
+      imageElement.style.display = 'none'; // 隐藏图片
+      videoElement.style.display = 'block'; // 显示视频
+    });
+    videoElement.addEventListener('error', () => {
+      imageElement.style.display = 'block';
+      videoElement.style.display = 'none';
+    });
+  } else {
+    imageElement.style.display = 'block';
+    videoElement.style.display = 'none';
   }
 });
 </script>
