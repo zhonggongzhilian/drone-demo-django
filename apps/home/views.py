@@ -362,3 +362,31 @@ def delete_users(request):
 def get_notifications(request):
     print("get notifications!")
     return render(request, 'home/notifications.html')
+
+
+def notification_detail(request):
+    video_url = request.GET.get('videoUrl')
+    info = request.GET.get('info')
+
+    # 获取当前用户
+    user = request.user
+
+    # 从数据库中获取当前用户的所有无人机记录
+    drones = Drone.objects.filter(user=user)
+
+    # 提取所有 drone_sn
+    drone_sns = [drone.drone_sn for drone in drones]
+
+    data = []
+    if info == '火情监控':
+        for drone_sn in drone_sns:
+            # 请求外部接口获取数据
+            response = requests.post('http://1.13.23.62:5000/getInfoBySN', json={'droneSN': drone_sn})
+            if response.status_code == 200:
+                data.extend(response.json())
+
+    return render(request, 'home/notification_detail.html', {
+        'video_url': video_url,
+        'info': info,
+        'data': data
+    })

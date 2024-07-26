@@ -132,7 +132,8 @@
 
 .toast-show {
     opacity: 1;
-}</style>
+}
+</style>
 {% endblock stylesheets %}
 
 {% block content %}
@@ -166,7 +167,7 @@
         <button><i class="fas fa-toggle-on"></i><span>开启摇杆</span></button>
         <button><i class="fas fa-toggle-off"></i><span>关闭摇杆</span></button>
     </div>
-    <div id="toast" class="toast">更新位置: </div>
+    <div id="toast" class="toast">更新位置:</div>
 </div>
 {% endblock content %}
 
@@ -285,5 +286,5 @@ map.setLayers([
     new AMap.TileLayer.Satellite()
 ]);
 
-    </script>
+</script>
 {% endblock javascripts %}

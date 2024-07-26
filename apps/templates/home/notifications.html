@@ -79,42 +79,42 @@
     <h1>预警信息</h1>
     <div class="video-container">
       <div class="video-wrapper">
-        <video autoplay loop muted>
+        <video onclick="openNotificationDetail('{% static 'assets/img/notification_fire.mp4' %}', '火情监控')">
           <source src="{% static 'assets/img/notification_fire.mp4' %}" type="video/mp4">
           您的浏览器不支持 video 标签。
         </video>
         <div class="video-info">火情监控</div>
       </div>
       <div class="video-wrapper">
-        <video autoplay loop muted>
+        <video onclick="openNotificationDetail('{% static 'assets/img/notification_water_pollution.mp4' %}', '水体污染')">
           <source src="{% static 'assets/img/notification_water_pollution.mp4' %}" type="video/mp4">
           您的浏览器不支持 video 标签。
         </video>
         <div class="video-info">水体污染</div>
       </div>
       <div class="video-wrapper">
-        <video autoplay loop muted>
+        <video onclick="openNotificationDetail('{% static 'assets/img/notification_air_pollution.mp4' %}', '空气质量')">
           <source src="{% static 'assets/img/notification_air_pollution.mp4' %}" type="video/mp4">
           您的浏览器不支持 video 标签。
         </video>
         <div class="video-info">空气质量</div>
       </div>
       <div class="video-wrapper">
-        <video autoplay loop muted>
+        <video onclick="openNotificationDetail('{% static 'assets/img/notification_traffic.mp4' %}', '交通拥堵')">
           <source src="{% static 'assets/img/notification_traffic.mp4' %}" type="video/mp4">
           您的浏览器不支持 video 标签。
         </video>
         <div class="video-info">交通拥堵</div>
       </div>
       <div class="video-wrapper">
-        <video autoplay loop muted>
+        <video onclick="openNotificationDetail('{% static 'assets/img/notification_flood.mp4' %}', '洪水灾情')">
           <source src="{% static 'assets/img/notification_flood.mp4' %}" type="video/mp4">
           您的浏览器不支持 video 标签。
         </video>
         <div class="video-info">洪水灾情</div>
       </div>
       <div class="video-wrapper">
-        <video autoplay loop muted>
+        <video onclick="openNotificationDetail('{% static 'assets/img/notification_building.mp4' %}', '违章建筑')">
           <source src="{% static 'assets/img/notification_building.mp4' %}" type="video/mp4">
           您的浏览器不支持 video 标签。
         </video>
@@ -125,4 +125,10 @@
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
-{% block javascripts %}{% endblock javascripts %}
+{% block javascripts %}
+<script>
+  function openNotificationDetail(videoUrl, info) {
+    window.location.href = `/notification_detail?videoUrl=${encodeURIComponent(videoUrl)}&info=${encodeURIComponent(info)}`;
+  }
+</script>
+{% endblock javascripts %}

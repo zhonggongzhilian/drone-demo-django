@@ -1,0 +1,94 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} 视频详情 {% endblock %}
+
+<!-- Load static files -->
+{% load static %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<style>
+  .video-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 视频覆盖整个背景 */
+    z-index: -1; /* 视频在背景层 */
+  }
+  .content {
+    position: relative;
+    width: 100%;
+    height: 100vh; /* 高度为视口高度 */
+    overflow: hidden; /* 隐藏溢出的内容 */
+    padding: 20px; /* 内边距 */
+    box-sizing: border-box; /* 包括内边距和边框 */
+  }
+  .card-container {
+    background: rgba(255, 255, 255, 0.2); /* 半透明效果 */
+    backdrop-filter: blur(10px); /* 毛玻璃效果 */
+    border-radius: 15px; /* 圆角效果 */
+    padding: 20px; /* 内边距 */
+    margin: 100px auto 20px; /* 顶部间距为 100px，底部间距为 20px，水平居中 */
+    max-width: 800px; /* 最大宽度 */
+    color: #fff; /* 文字颜色 */
+    text-align: center; /* 文字居中 */
+    position: relative;
+  }
+  .info-container {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px; /* 标题和内容之间的间距 */
+  }
+  .data-container {
+    background: rgba(0, 0, 0, 0.5); /* 半透明效果 */
+    padding: 15px;
+    border-radius: 10px; /* 圆角效果 */
+    margin-top: 20px; /* 内容和数据之间的间距 */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
+  .data-card {
+    background: rgba(255, 255, 255, 0.2); /* 半透明效果 */
+    backdrop-filter: blur(5px); /* 毛玻璃效果 */
+    border-radius: 10px; /* 圆角效果 */
+    padding: 10px;
+    width: 100%; /* 使小卡片宽度适应容器 */
+    max-width: 300px; /* 最大宽度 */
+    color: #fff; /* 文字颜色 */
+    text-align: center; /* 文字居中 */
+  }
+  .data-card img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px; /* 圆角效果 */
+  }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+  <div class="content">
+    <video class="video-background" autoplay loop muted>
+      <source src="{{ video_url }}" type="video/mp4">
+      您的浏览器不支持 video 标签。
+    </video>
+    <div class="card-container">
+      <div class="info-container">{{ info }}</div>
+      {% if info == '火情监控' and data %}
+        <div class="data-container">
+          {% for item in data %}
+            <div class="data-card">
+              <img src="{{ item.ImageSource }}" alt="Detected Image">
+              <p><strong>时间戳:</strong> {{ item.Timestamp }}</p>
+              <p><strong>纬度:</strong> {{ item.Latitude }}</p>
+              <p><strong>经度:</strong> {{ item.Longitude }}</p>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock content %}
