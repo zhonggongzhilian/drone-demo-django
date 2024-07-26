@@ -6,15 +6,13 @@ Copyright (c) 2019 - present AppSeed.us
 import json
 import logging
 
-import requests
 from django import template
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.template import loader
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
@@ -45,13 +43,40 @@ ELocalStorageKey = {
 
 BACKEND = getattr(settings, 'BACKEND_URL', 'http://1.13.23.62:5000')
 
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+import requests
+
 
 @login_required(login_url="/login/")
 def index(request):
-    context = {'segment': 'index'}
+    # 获取当前用户
+    user = request.user
 
-    html_template = loader.get_template('home/index.html')
-    return HttpResponse(html_template.render(context, request))
+    # 从数据库中获取当前用户的所有无人机记录
+    drones = Drone.objects.filter(user=user)
+
+    # 提取所有 drone_sn
+    drone_sns = [drone.drone_sn for drone in drones]
+
+    notifications = []
+    fire_points = []
+    for drone_sn in drone_sns:
+        # 请求外部接口获取数据
+        response = requests.post('http://1.13.23.62:5000/getInfoBySN', json={'droneSN': drone_sn})
+        if response.status_code == 200:
+            data = response.json()
+            notifications.extend(data)
+            # 处理通知数据
+            fire_points.extend([(item['Latitude'], item['Longitude']) for item in data if
+                                float(item['Latitude']) > 0 and float(item['Longitude']) > 0])
+
+    return render(request, 'home/index.html', {
+        'user': user,
+        'drones': drones,
+        'notifications': notifications,
+        'fire_points': fire_points  # 将火点数据传递给模板
+    })
 
 
 @login_required(login_url="/login/")

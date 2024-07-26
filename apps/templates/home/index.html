@@ -2,6 +2,8 @@
 
 {% block title %} Dashboard {% endblock %}
 
+{% load static %}
+
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
 <style>
@@ -32,7 +34,7 @@
     z-index: 1000; /* 确保卡片在最前面 */
 }
 
-.card {
+.card-info {
     background: rgba(255, 255, 255, 0.4); /* 卡片背景半透明效果 */
     border-radius: 10px;
     padding: 15px;
@@ -41,7 +43,7 @@
     transition: background-color 0.3s, transform 0.3s;
 }
 
-.card:hover {
+.card-info:hover {
     background-color: rgba(255, 255, 255, 1); /* 鼠标悬停效果 */
     transform: scale(1.05); /* 放大效果 */
 }
@@ -140,32 +142,25 @@
 <div class="content">
     <div id="mapContainer"></div>
     <div class="card-container">
-        <div class="card">
+        <div class="card-info">
             <h3>区域信息</h3>
             <p>区域名称：仪征大数据产业园</p>
             <p>区域面积：20000平</p>
-            <p>设备数量：9</p>
+            <p>设备数量：{{ drones|length }}</p>
         </div>
-        <div class="card">
+        <div class="card-info">
             <h3>火点监测</h3>
-            <p>历史检测火点数：9</p>
-            <p>历史处理火点数：9</p>
+            <p>历史检测火点数：{{ notifications|length }}</p>
+            <p>历史处理火点数：{{ notifications|length }}</p>
         </div>
-        <div class="card">
+        <div class="card-info">
             <h3>水污染监测</h3>
             <p>历史水污染数：2</p>
             <p>历史处理水污染数：2</p>
         </div>
     </div>
     <div class="control-panel">
-        <button><i class="fas fa-play"></i><span>开始作业</span></button>
-        <button><i class="fas fa-arrow-up"></i><span>起飞</span></button>
-        <button><i class="fas fa-pause"></i><span>暂停</span></button>
-        <button><i class="fas fa-undo"></i><span>返航</span></button>
-        <button><i class="fas fa-stop"></i><span>停止</span></button>
-        <button><i class="fas fa-arrow-down"></i><span>迫降</span></button>
-        <button><i class="fas fa-toggle-on"></i><span>开启摇杆</span></button>
-        <button><i class="fas fa-toggle-off"></i><span>关闭摇杆</span></button>
+        <!-- 控制面板按钮 -->
     </div>
     <div id="toast" class="toast">更新位置:</div>
 </div>
@@ -178,79 +173,51 @@
     var map = new AMap.Map('mapContainer', {
         resizeEnable: true,
         center: [119.24547, 32.26518], // 地图中心点
-        zoom: 15, // 地图缩放级别
+        zoom: 18, // 地图缩放级别
         mapStyle: 'amap://styles/dark' // 深色主题样式
     });
 
-    // 默认标记图标
+    // 设置默认显示为卫星地图
+    map.setLayers([
+        new AMap.TileLayer.Satellite()
+    ]);
+
+    // 无人机图标
     var defaultIcon = new AMap.Icon({
-        size: new AMap.Size(25, 34), // 默认图标大小
-        image: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_r.png', // 图标的URL
-        imageSize: new AMap.Size(25, 34) // 图标实际大小
+        size: new AMap.Size(70, 70), // 默认图标大小
+        image: '{% static "assets/img/drone_pin.png" %}', // 图标的URL
+        imageSize: new AMap.Size(70, 70) // 图标实际大小
     });
 
-    // 高亮标记图标
+    // 火焰图标
     var highlightIcon = new AMap.Icon({
-        size: new AMap.Size(35, 48), // 高亮图标大小
-        image: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_r.png', // 图标的URL
-        imageSize: new AMap.Size(35, 48) // 图标实际大小
+        size: new AMap.Size(70, 70), // 高亮图标大小
+        image: '{% static "assets/img/fire.png" %}', // 图标的URL
+        imageSize: new AMap.Size(70, 70) // 图标实际大小
     });
 
-    var marker = new AMap.Marker({
-        position: new AMap.LngLat(119.24547, 32.26518), // 标记的经纬度
-        title: '指定位置',
-        icon: defaultIcon,
-        offset: new AMap.Pixel(-12.5, -34), // 修正标记位置，使其底部中点对齐
-        anchor: 'bottom-center', // 锚点设置为底部中点
-        draggable: true // 使标记可拖动
-    });
 
-    // 将标记添加到地图上
-    map.add(marker);
+    {% for drone in drones %}
+        var marker1 = new AMap.Marker({
+            position: new AMap.LngLat({{ drone.longitude }}, {{ drone.latitude }}),
+            icon: defaultIcon,
+            anchor: 'bottom-center',
+            draggable: true
+        });
+        map.add(marker1);
+    {% endfor %}
 
-    // 鼠标悬停事件
-    marker.on('mouseover', function () {
-        marker.setIcon(highlightIcon);
-        marker.setOffset(new AMap.Pixel(-17.5, -48)); // 修正高亮标记位置
-        marker.setContent('<div class="marker-shadow marker-highlight"><img src="https://webapi.amap.com/theme/v1.3/markers/n/mark_r.png" style="width: 35px; height: 48px;"></div>'); // 添加阴影效果和高亮类
-    });
+    // 添加火点标记
+    {% for point in fire_points %}
+        var fireMarker = new AMap.Marker({
+            position: new AMap.LngLat({{ point.1 }}, {{ point.0 }}),
+            icon: highlightIcon,
+            anchor: 'bottom-center'
+        });
+        map.add(fireMarker);
+    {% endfor %}
 
-    // 鼠标移出事件
-    marker.on('mouseout', function () {
-        marker.setIcon(defaultIcon);
-        marker.setOffset(new AMap.Pixel(-12.5, -34)); // 恢复默认标记位置
-        marker.setContent('<div class="marker-shadow marker-normal"><img src="https://webapi.amap.com/theme/v1.3/markers/n/mark_r.png" style="width: 25px; height: 34px;"></div>'); // 恢复默认阴影效果和正常类
-});
-    // 动画移动标记
-function animateMarker(marker, newPosition) {
-    var start = marker.getPosition();
-    var end = newPosition;
-    var startTime = performance.now();
-    var duration = 1000; // 动画持续时间 1 秒
 
-    function animate(time) {
-        var elapsed = time - startTime;
-        var fraction = Math.min(elapsed / duration, 1);
-        var lng = start.lng + (end.lng - start.lng) * fraction;
-        var lat = start.lat + (end.lat - start.lat) * fraction;
-        marker.setPosition(new AMap.LngLat(lng, lat));
-
-        if (fraction < 1) {
-            requestAnimationFrame(animate);
-        }
-    }
-
-    requestAnimationFrame(animate);
-}
-
-// 拖动结束事件
-marker.on('dragend', function (e) {
-    var newPosition = marker.getPosition();
-    var lng = newPosition.lng;
-    var lat = newPosition.lat;
-    showToast('更新位置: ' + lng.toFixed(6) + ', ' + lat.toFixed(6));
-    animateMarker(marker, newPosition);
-});
 
 // 显示 toast
 function showToast(message) {
@@ -262,29 +229,7 @@ function showToast(message) {
     }, 3000); // 3秒后隐藏
 }
 
-// 删除工具栏和比例尺控件
-// AMap.plugin(['AMap.ToolBar'], function() {
-//     var toolBar = new AMap.ToolBar();
-//     map.addControl(toolBar);
-// });
 
-// AMap.plugin(['AMap.Scale'], function() {
-//     var scale = new AMap.Scale();
-//     map.addControl(scale);
-// });
-
-// 添加地图类型切换控件并设置默认类型为卫星图
-AMap.plugin(['AMap.MapType'], function() {
-    var mapType = new AMap.MapType({
-        defaultType: 1 // 0表示默认标准图，1表示卫星图
-    });
-    map.addControl(mapType);
-});
-
-// 设置默认显示为卫星地图
-map.setLayers([
-    new AMap.TileLayer.Satellite()
-]);
 
 </script>
 {% endblock javascripts %}
