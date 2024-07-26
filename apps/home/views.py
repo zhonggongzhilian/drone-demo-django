@@ -270,21 +270,21 @@ def add_drone(request):
     return render(request, 'home/add_drone.html', {'form': form})
 
 
-def live_view(request):
-    devices = [
-        # 示例设备数据，替换为实际数据
-        {'id': 1, 'name': 'Device 1', 'stream_url': 'http://192.168.43.21/hls/stream1.m3u8'},
-        {'id': 2, 'name': 'Device 2', 'stream_url': 'http://192.168.43.21/hls/stream2.m3u8'},
-        {'id': 3, 'name': 'Device 3', 'stream_url': 'http://192.168.43.21/hls/stream3.m3u8'},
-        {'id': 4, 'name': 'Device 4', 'stream_url': 'http://192.168.43.21/hls/stream4.m3u8'},
-        {'id': 5, 'name': 'Device 5', 'stream_url': 'http://192.168.43.21/hls/stream5.m3u8'},
-        {'id': 6, 'name': 'Device 6', 'stream_url': 'http://192.168.43.21/hls/stream6.m3u8'},
-        {'id': 7, 'name': 'Device 7', 'stream_url': 'http://192.168.43.21/hls/stream7.m3u8'},
-        {'id': 8, 'name': 'Device 8', 'stream_url': 'http://192.168.43.21/hls/stream8.m3u8'},
-        {'id': 9, 'name': 'Device 9', 'stream_url': 'http://192.168.43.21/hls/stream9.m3u8'},
-    ]
-    print(devices)
-    return render(request, 'home/live_view.html', {'devices': devices})
+# def live_view(request):
+#     devices = [
+#         # 示例设备数据，替换为实际数据
+#         {'id': 1, 'name': 'Device 1', 'stream_url': 'http://192.168.43.21/hls/stream1.m3u8'},
+#         {'id': 2, 'name': 'Device 2', 'stream_url': 'http://192.168.43.21/hls/stream2.m3u8'},
+#         {'id': 3, 'name': 'Device 3', 'stream_url': 'http://192.168.43.21/hls/stream3.m3u8'},
+#         {'id': 4, 'name': 'Device 4', 'stream_url': 'http://192.168.43.21/hls/stream4.m3u8'},
+#         {'id': 5, 'name': 'Device 5', 'stream_url': 'http://192.168.43.21/hls/stream5.m3u8'},
+#         {'id': 6, 'name': 'Device 6', 'stream_url': 'http://192.168.43.21/hls/stream6.m3u8'},
+#         {'id': 7, 'name': 'Device 7', 'stream_url': 'http://192.168.43.21/hls/stream7.m3u8'},
+#         {'id': 8, 'name': 'Device 8', 'stream_url': 'http://192.168.43.21/hls/stream8.m3u8'},
+#         {'id': 9, 'name': 'Device 9', 'stream_url': 'http://192.168.43.21/hls/stream9.m3u8'},
+#     ]
+#     print(devices)
+#     return render(request, 'home/live_view.html', {'devices': devices})
 
 
 @login_required
@@ -530,3 +530,9 @@ def admin_dashboard_delete_notifications(request):
 
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
+
+
+@login_required()
+def live_view(request):
+    drones = Drone.objects.filter(user=request.user)
+    return render(request, 'home/live_view.html', {'drones': drones})

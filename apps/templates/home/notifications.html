@@ -9,7 +9,7 @@
 {% block stylesheets %}
 <style>
   .content {
-    padding: 100px 20px; /* 与导航栏保持 100px 的间距，并在左右两边添加 20px 的空间 */
+    padding: 200px 20px; /* 与导航栏保持 200px 的间距，并在左右两边添加 20px 的空间 */
   }
   h1 {
     text-align: center; /* 标题居中 */
@@ -34,42 +34,39 @@
     border-radius: 15px; /* 圆角效果 */
     cursor: pointer; /* 鼠标悬停效果 */
     transition: transform 0.3s ease, box-shadow 0.3s ease; /* 平滑过渡效果 */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); /* 增强的阴影效果 */
   }
   .video-wrapper video:hover {
     transform: scale(1.05); /* 放大效果 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 阴影效果 */
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5); /* 更强的阴影效果 */
   }
-  .video-wrapper video::before {
-    content: '《预警信息》';
+  .card-container {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: #fff;
-    font-size: 24px;
-    font-weight: bold;
-    text-align: center;
-    background: rgba(0, 0, 0, 0.5); /* 半透明毛玻璃效果 */
+    background: rgba(255, 255, 255, 0.7); /* 半透明背景 */
+    backdrop-filter: blur(10px); /* 毛玻璃效果 */
     border-radius: 15px; /* 圆角效果，与视频一致 */
-    padding: 10px;
-    width: 100%;
-    height: 100%;
+    padding: 15px;
+    text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
     pointer-events: none; /* 使遮罩层不会阻止鼠标事件 */
     z-index: 10; /* 确保遮罩层在视频上方 */
-    transition: opacity 0.3s ease; /* 平滑过渡效果 */
-    opacity: 0; /* 初始状态为隐藏 */
-  }
-  .video-wrapper video:hover::before {
-    opacity: 1; /* 鼠标悬停时显示遮罩层 */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3); /* 增强的阴影效果 */
+    border: 1px solid rgba(0, 0, 0, 0.2); /* 边框效果 */
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.3)); /* 边缘渐变效果 */
+    width: fit-content; /* 根据内容适配宽度 */
+    height: fit-content; /* 根据内容适配高度 */
+    max-width: 90%; /* 最大宽度限制，防止过宽 */
+    max-height: 90%; /* 最大高度限制，防止过高 */
   }
   .video-info {
-    text-align: center; /* 信息居中 */
-    margin-top: 10px; /* 信息与视频的间距 */
     font-size: 18px; /* 信息字体大小 */
-    color: #666; /* 信息颜色 */
+    color: #333; /* 信息颜色 */
+    font-weight: bold; /* 信息加粗 */
   }
 </style>
 {% endblock stylesheets %}
@@ -79,46 +76,58 @@
     <h1>预警信息</h1>
     <div class="video-container">
       <div class="video-wrapper">
-        <video onclick="openNotificationDetail('{% static 'assets/img/notification_fire.mp4' %}', '火情监控')">
+        <video autoplay loop muted onclick="openNotificationDetail('{% static 'assets/img/notification_fire.mp4' %}', '火情监控')">
           <source src="{% static 'assets/img/notification_fire.mp4' %}" type="video/mp4">
           您的浏览器不支持 video 标签。
         </video>
-        <div class="video-info">火情监控</div>
+        <div class="card-container">
+          <div class="video-info">火情监控</div>
+        </div>
       </div>
       <div class="video-wrapper">
-        <video onclick="openNotificationDetail('{% static 'assets/img/notification_water_pollution.mp4' %}', '水体污染')">
+        <video autoplay loop muted onclick="openNotificationDetail('{% static 'assets/img/notification_water_pollution.mp4' %}', '水体污染')">
           <source src="{% static 'assets/img/notification_water_pollution.mp4' %}" type="video/mp4">
           您的浏览器不支持 video 标签。
         </video>
-        <div class="video-info">水体污染</div>
+        <div class="card-container">
+          <div class="video-info">水体污染</div>
+        </div>
       </div>
       <div class="video-wrapper">
-        <video onclick="openNotificationDetail('{% static 'assets/img/notification_air_pollution.mp4' %}', '空气质量')">
+        <video autoplay loop muted onclick="openNotificationDetail('{% static 'assets/img/notification_air_pollution.mp4' %}', '空气质量')">
           <source src="{% static 'assets/img/notification_air_pollution.mp4' %}" type="video/mp4">
           您的浏览器不支持 video 标签。
         </video>
-        <div class="video-info">空气质量</div>
+        <div class="card-container">
+          <div class="video-info">空气质量</div>
+        </div>
       </div>
       <div class="video-wrapper">
-        <video onclick="openNotificationDetail('{% static 'assets/img/notification_traffic.mp4' %}', '交通拥堵')">
+        <video autoplay loop muted onclick="openNotificationDetail('{% static 'assets/img/notification_traffic.mp4' %}', '交通拥堵')">
           <source src="{% static 'assets/img/notification_traffic.mp4' %}" type="video/mp4">
           您的浏览器不支持 video 标签。
         </video>
-        <div class="video-info">交通拥堵</div>
+        <div class="card-container">
+          <div class="video-info">交通拥堵</div>
+        </div>
       </div>
       <div class="video-wrapper">
-        <video onclick="openNotificationDetail('{% static 'assets/img/notification_flood.mp4' %}', '洪水灾情')">
+        <video autoplay loop muted onclick="openNotificationDetail('{% static 'assets/img/notification_flood.mp4' %}', '洪水灾情')">
           <source src="{% static 'assets/img/notification_flood.mp4' %}" type="video/mp4">
           您的浏览器不支持 video 标签。
         </video>
-        <div class="video-info">洪水灾情</div>
+        <div class="card-container">
+          <div class="video-info">洪水灾情</div>
+        </div>
       </div>
       <div class="video-wrapper">
-        <video onclick="openNotificationDetail('{% static 'assets/img/notification_building.mp4' %}', '违章建筑')">
+        <video autoplay loop muted onclick="openNotificationDetail('{% static 'assets/img/notification_building.mp4' %}', '违章建筑')">
           <source src="{% static 'assets/img/notification_building.mp4' %}" type="video/mp4">
           您的浏览器不支持 video 标签。
         </video>
-        <div class="video-info">违章建筑</div>
+        <div class="card-container">
+          <div class="video-info">违章建筑</div>
+        </div>
       </div>
     </div>
   </div>
