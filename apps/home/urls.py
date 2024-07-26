@@ -28,7 +28,12 @@ urlpatterns = [
     path('delete_users/', views.delete_users, name='delete_users'),
     path('notifications/', views.get_notifications, name='notifications'),
     path('notification_detail', views.notification_detail, name='notification_detail'),
-
+    path('users/<int:user_id>/', views.get_user, name='get_user'),
+    path('users/<int:user_id>/update/', views.update_user, name='update_user'),
+    path('admin_dashboard/add_drone/', views.admin_dashboard_add_drone, name='admin_dashboard_add_drone'),
+    path('admin_dashboard/update_drone/<int:drone_id>/', views.admin_dashboard_update_drone, name='admin_dashboard_update_drone'),
+    path('admin_dashboard/delete_drones/', views.admin_dashboard_delete_drones, name='admin_dashboard_delete_drones'),
+    path('admin_dashboard/delete_notifications/', views.admin_dashboard_delete_notifications, name='delete_notifications'),
     # Matches any html file
     # re_path(r'^.*\.*', views.pages, name='pages'),
 

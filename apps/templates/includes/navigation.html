@@ -31,12 +31,6 @@
                         <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">监控管理</h5>
                     </a>
                 </li>
-                <li class="nav-item {% if 'user' in segment %} active {% endif %}">
-                    <a href="{% url 'user_data' %}" class="nav-link" style="display: flex; align-items: center;">
-                        <i class="fas fa-user-circle" style="font-size: 24px;"></i> <!-- 更换为用户图标 -->
-                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">账户设置</h5>
-                    </a>
-                </li>
                 <li class="nav-item {% if 'device_list' in segment %} active {% endif %}">
                     <a href="{% url 'device_list' %}" class="nav-link" style="display: flex; align-items: center;">
                         <i class="fas fa-desktop" style="font-size: 24px;"></i> <!-- 更换为无人机图标 -->
@@ -49,12 +43,20 @@
                         <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">预警信息</h5>
                     </a>
                 </li>
+                <li class="nav-item {% if 'user' in segment %} active {% endif %}">
+                    <a href="{% url 'user_data' %}" class="nav-link" style="display: flex; align-items: center;">
+                        <i class="fas fa-user-circle" style="font-size: 24px;"></i> <!-- 更换为用户图标 -->
+                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">账户设置</h5>
+                    </a>
+                </li>
+                {% if user.is_admin %} <!-- 仅显示“后台管理”按钮如果用户是管理员 -->
                 <li class="nav-item {% if 'tables' in segment %} active {% endif %}">
                     <a href="{% url 'admin_dashboard' %}" class="nav-link" style="display: flex; align-items: center;">
                         <i class="fas fa-cogs" style="font-size: 24px;"></i> <!-- 更换为设置图标 -->
                         <h5 style="margin: 0; padding-left: 15px; font-size: 18px;">后台管理</h5>
                     </a>
                 </li>
+                {% endif %}
             </ul>
             <ul class="navbar-nav" style="display: flex; align-items: center;">
                 <li class="input-group d-flex align-items-center mb-0">

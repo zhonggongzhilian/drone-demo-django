@@ -18,6 +18,7 @@ from django.shortcuts import render, redirect
 from django.template import loader
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 from .forms import DroneForm
 from .forms import EditProfileForm
@@ -313,6 +314,19 @@ def admin_dashboard(request):
     users = CustomUser.objects.all()
     drones = Drone.objects.all()
     notifications = []  # 添加通知信息
+    # 提取所有 drone_sn
+    drone_sns = [drone.drone_sn for drone in drones]
+
+    for drone_sn in drone_sns:
+        # 请求外部接口获取数据
+        response = requests.post('http://1.13.23.62:5000/getInfoBySN', json={'droneSN': drone_sn})
+        if response.status_code == 200:
+            notifications.extend(response.json())
+
+    print(users)
+    print(drones)
+    print(notifications)
+
     return render(request, 'home/admin_dashboard.html', {
         'users': users,
         'drones': drones,
@@ -390,3 +404,129 @@ def notification_detail(request):
         'info': info,
         'data': data
     })
+
+
+# @csrf_exempt
+# def update_user(request, user_id):
+#     from django.contrib.auth.hashers import make_password
+#     if request.method == 'POST':
+#         user = CustomUser.objects.get(pk=user_id)
+#         data = json.loads(request.body.decode('utf-8'))
+#         user.username = data.get('username')
+#         user.full_name = data.get('full_name')
+#         user.email = data.get('email')
+#         user.phone_number = data.get('phone_number')
+#         user.is_admin = data.get('is_admin') == 'true'
+#         if 'password' in data:
+#             user.password = make_password(data.get('password'))
+#         user.save()
+#         return JsonResponse({'success': True})
+#     return JsonResponse({'success': False}, status=400)
+
+
+def get_user(request, user_id):
+    try:
+        user = CustomUser.objects.get(id=user_id)
+        data = {
+            'id': user.id,
+            'username': user.username,
+            'full_name': user.full_name,
+            'email': user.email,
+            'phone_number': user.phone_number,
+            'is_admin': user.is_admin
+        }
+        return JsonResponse(data)
+    except CustomUser.DoesNotExist:
+        return JsonResponse({'error': 'User not found'}, status=404)
+
+
+@csrf_exempt
+@require_POST
+def update_user(request, user_id):
+    try:
+        user = CustomUser.objects.get(id=user_id)
+        data = json.loads(request.body)
+
+        user.username = data.get('username', user.username)
+        user.full_name = data.get('full_name', user.full_name)
+        user.email = data.get('email', user.email)
+        user.phone_number = data.get('phone_number', user.phone_number)
+        user.is_admin = data.get('is_admin', user.is_admin)
+        user.save()
+
+        return JsonResponse({'success': True})
+    except CustomUser.DoesNotExist:
+        return JsonResponse({'error': 'User not found'}, status=404)
+
+
+@login_required
+def admin_dashboard_add_drone(request):
+    if request.method == 'POST':
+        form = DroneForm(request.POST)
+        if form.is_valid():
+            drone = form.save(commit=False)
+            drone.user = request.user
+            drone.save()
+            return redirect('device_list')
+    else:
+        form = DroneForm()
+    return render(request, 'home/admin_dashboard.html', {'form': form})
+
+
+@csrf_exempt
+def admin_dashboard_update_drone(request, drone_id):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        try:
+            drone = Drone.objects.get(id=drone_id)
+            drone.drone_model = data['drone_model']
+            drone.drone_sn = data['drone_sn']
+            drone.remote_sn = data['remote_sn']
+            drone.workspace_id = data['workspace_id']
+            drone.status = data['status']
+            drone.user_id = data['user_id']
+            drone.longitude = data['longitude']
+            drone.latitude = data['latitude']
+            drone.save()
+            return JsonResponse({'success': True})
+        except Drone.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Drone not found'})
+
+
+@csrf_exempt
+def admin_dashboard_delete_drones(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        ids = data.get('ids', [])
+        Drone.objects.filter(id__in=ids).delete()
+        return JsonResponse({'success': True})
+
+
+@csrf_exempt
+@require_POST
+def admin_dashboard_delete_notifications(request):
+    try:
+        data = json.loads(request.body)
+        for item in data:
+            drone_sn = item.get('droneSN')
+            timestamp = item.get('timeStamp')
+
+            if not drone_sn or not timestamp:
+                continue
+
+            # Call the external API to delete the notification
+            response = requests.post(
+                'http://1.13.23.62:5000/delFireData',
+                json={
+                    'droneSN': drone_sn,
+                    'timeStamp': timestamp
+                }
+            )
+
+            if response.status_code != 200:
+                return JsonResponse({'success': False, 'message': 'API 请求失败'})
+
+        return JsonResponse({'success': True})
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
