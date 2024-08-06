@@ -80,6 +80,11 @@
     .modal-content {
         background-color: #f8f9fa;
     }
+    .device-link {
+        text-decoration: none; /* 去除下划线 */
+        color: inherit; /* 保持文字颜色一致 */
+        /* 其他样式 */
+    }
 </style>
 {% endblock stylesheets %}
 
@@ -95,37 +100,40 @@
         <h2 class="text-center">设备列表</h2>
         {% for device in devices %}
         <div class="device-card">
-            <h3>设备详情</h3>
-            <table class="device-table">
-                <tr>
-                    <th>无人机型号</th>
-                    <td>{{ device.drone_model }}</td>
-                </tr>
-                <tr>
-                    <th>无人机序列号</th>
-                    <td>{{ device.drone_sn }}</td>
-                </tr>
-                <tr>
-                    <th>远程控制器序列号</th>
-                    <td>{{ device.remote_sn }}</td>
-                </tr>
-                <tr>
-                    <th>工作区ID</th>
-                    <td>{{ device.workspace_id }}</td>
-                </tr>
-                <tr>
-                    <th>设备状态</th>
-                    <td>{{ device.get_status_display }}</td>
-                </tr>
-                <tr>
-                    <th>经度</th>
-                    <td>{{ device.longitude }}</td>
-                </tr>
-                <tr>
-                    <th>纬度</th>
-                    <td>{{ device.latitude }}</td>
-                </tr>
-            </table>
+            <a href="{% url 'live_view_drone' device.drone_sn %}" class="card-link"
+               style="text-decoration: none; color: inherit;">
+                <h3>设备详情</h3>
+                <table class="device-table">
+                    <tr>
+                        <th>无人机型号</th>
+                        <td>{{ device.drone_model }}</td>
+                    </tr>
+                    <tr>
+                        <th>无人机序列号</th>
+                        <td>{{ device.drone_sn }}</td>
+                    </tr>
+                    <tr>
+                        <th>远程控制器序列号</th>
+                        <td>{{ device.remote_sn }}</td>
+                    </tr>
+                    <tr>
+                        <th>工作区ID</th>
+                        <td>{{ device.workspace_id }}</td>
+                    </tr>
+                    <tr>
+                        <th>设备状态</th>
+                        <td>{{ device.get_status_display }}</td>
+                    </tr>
+                    <tr>
+                        <th>经度</th>
+                        <td>{{ device.longitude }}</td>
+                    </tr>
+                    <tr>
+                        <th>纬度</th>
+                        <td>{{ device.latitude }}</td>
+                    </tr>
+                </table>
+            </a>
         </div>
         {% endfor %}
     </div>
@@ -135,7 +143,8 @@
 <div class="floating-button" data-toggle="modal" data-target="#addDroneModal">+</div>
 
 <!-- Modal -->
-<div class="modal fade" id="addDroneModal" tabindex="-1" role="dialog" aria-labelledby="addDroneModalLabel" aria-hidden="true">
+<div class="modal fade" id="addDroneModal" tabindex="-1" role="dialog" aria-labelledby="addDroneModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -182,7 +191,8 @@
                     </div>
                     <div class="form-group">
                         <label for="longitude">经度</label>
-                        <input type="text" id="longitude" name="longitude" class="form-control" value="119.24547" required>
+                        <input type="text" id="longitude" name="longitude" class="form-control" value="119.24547"
+                               required>
                     </div>
                     <div class="form-group">
                         <label for="latitude">纬度</label>

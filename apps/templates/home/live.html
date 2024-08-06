@@ -1,0 +1,54 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}直播画面{% endblock %}
+
+{% block stylesheets %}
+<style>
+/* 在这里添加你的CSS样式 */
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px;
+}
+.drone-card {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 300px;
+}
+.drone-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+.drone-card h3 {
+    margin-top: 0;
+}
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <h2 class="text-center" style="margin-top: 100px;">无人机列表</h2>
+    </div>
+    <div class="row">
+        {% for drone in drones %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ drone.drone_model }} - 序列号: {{ drone.drone_sn }}</h5>
+                    <!-- 这里可以添加更多关于无人机的信息展示 -->
+                </div>
+                <div class="card-footer text-muted">
+                    <a href="{% url 'live_view_drone' drone.drone_sn %}" class="btn btn-primary">查看直播</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
