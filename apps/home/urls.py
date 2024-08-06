@@ -20,6 +20,7 @@ urlpatterns = [
     path('change_password/', views.change_password, name='change_password'),
     path('upload_avatar/', views.upload_avatar, name='upload_avatar'),
     path('live/', views.live_view, name='live_view'),
+    path('live_view_drone/<str:drone_sn>/', views.live_view_drone, name='live_view_drone'),
     path('edit_profile/', views.edit_profile, name='edit_profile'),
     path('add_drone/', views.add_drone, name='add_drone'),
     path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),

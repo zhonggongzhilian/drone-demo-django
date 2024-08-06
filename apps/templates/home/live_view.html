@@ -125,40 +125,44 @@
       <select id="droneSelect" class="card-info">
         <option value="">选择无人机</option>
         {% for drone in drones %}
-        <option value="{{ drone.drone_sn }}">{{ drone.drone_sn }}</option>
+        <option value="{{ drone.drone_sn }}" {% if drone.drone_sn == selected_drone.drone_sn %}selected{% endif %}>
+            {{ drone.drone_sn }}
+        </option>
         {% endfor %}
       </select>
       <div id="droneInfo" class="card-info">
         <div class="card-title">无人机信息</div>
         <table class="card-table">
+          {% if selected_drone %}
           <tr>
             <th>无人机名称</th>
-            <td id="droneModel">---</td>
+            <td>{{ selected_drone.drone_model }}</td>
           </tr>
           <tr>
             <th>无人机编号</th>
-            <td id="droneSn">---</td>
+            <td>{{ selected_drone.drone_sn }}</td>
           </tr>
           <tr>
             <th>远程编号</th>
-            <td id="remoteSn">---</td>
+            <td>{{ selected_drone.remote_sn }}</td>
           </tr>
           <tr>
             <th>工作空间ID</th>
-            <td id="workspaceId">---</td>
+            <td>{{ selected_drone.workspace_id }}</td>
           </tr>
           <tr>
             <th>状态</th>
-            <td id="status">---</td>
+            <td>{{ selected_drone.status }}</td>
           </tr>
           <tr>
             <th>经度</th>
-            <td id="longitude">---</td>
+            <td>{{ selected_drone.longitude }}</td>
           </tr>
           <tr>
             <th>纬度</th>
-            <td id="latitude">---</td>
+            <td>{{ selected_drone.latitude }}</td>
           </tr>
+          {% endif %}
         </table>
       </div>
       <div class="card-info">
