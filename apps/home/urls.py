@@ -35,6 +35,8 @@ urlpatterns = [
     path('admin_dashboard/update_drone/<int:drone_id>/', views.admin_dashboard_update_drone, name='admin_dashboard_update_drone'),
     path('admin_dashboard/delete_drones/', views.admin_dashboard_delete_drones, name='admin_dashboard_delete_drones'),
     path('admin_dashboard/delete_notifications/', views.admin_dashboard_delete_notifications, name='delete_notifications'),
+    # 监控管理页面URL模式
+    path('live_all/', views.live, name='live'),
     # Matches any html file
     # re_path(r'^.*\.*', views.pages, name='pages'),
 

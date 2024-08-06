@@ -568,3 +568,10 @@ def live_view_drone(request, drone_sn=None):
     }
     print(f"{selected_drone=}")
     return render(request, 'home/live_view.html', context)
+
+def live(request):
+    # 获取所有无人机的列表
+    drones = Drone.objects.all()
+    # 渲染监控管理页面，并将无人机列表传递给模板
+    return render(request, 'home/live.html', {'drones': drones})
+

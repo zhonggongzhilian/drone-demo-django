@@ -122,14 +122,6 @@
       <img src="http://1.13.23.62:6060/video_feed" id="imageElement" alt="Video Stream" class="img-element" />
     </div>
     <div class="card-container">
-      <select id="droneSelect" class="card-info">
-        <option value="">选择无人机</option>
-        {% for drone in drones %}
-        <option value="{{ drone.drone_sn }}" {% if drone.drone_sn == selected_drone.drone_sn %}selected{% endif %}>
-            {{ drone.drone_sn }}
-        </option>
-        {% endfor %}
-      </select>
       <div id="droneInfo" class="card-info">
         <div class="card-title">无人机信息</div>
         <table class="card-table">
