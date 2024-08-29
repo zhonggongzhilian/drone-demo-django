@@ -93,8 +93,17 @@
                                             <span class="text-danger">{{ form.password2.errors }}</span>
                                         </div>
 
-                                    </div>
+                                        <div class="col-md-12 px-md-1">
+                                            <div class="form-group">
+                                                <label>邀请码</label>
+                                                <input type="text" class="form-control" name="invitation_code" required>
+                                            </div>
+                                            {% if invitation_code_error %}
+                                                <span class="text-danger">{{ invitation_code_error }}</span>
+                                            {% endif %}
+                                        </div>
 
+                                    </div>
 
                                 </div>
                                 <div class="card-footer text-center">
