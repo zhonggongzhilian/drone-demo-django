@@ -118,9 +118,11 @@
 <div class="content">
   <div class="video-container">
     <div class="video-wrapper">
-      <video id="videoElement" controls class="video-element"></video>
-      <img src="http://1.13.23.62:6060/video_feed" id="imageElement" alt="Video Stream" class="img-element" />
-    </div>
+    <video autoplay loop muted>
+          <source src="{% static 'assets/img/output_fire.mp4' %}" type="video/mp4">
+          您的浏览器不支持 video 标签。
+        </video>
+</div>
     <div class="card-container">
       <div id="droneInfo" class="card-info">
         <div class="card-title">无人机信息</div>
@@ -162,7 +164,7 @@
         <table class="card-table">
           <tr>
             <th>巡检通知告警</th>
-            <td>有火源！</td>
+            <td>连接无人机查看实时告警！</td>
           </tr>
         </table>
       </div>

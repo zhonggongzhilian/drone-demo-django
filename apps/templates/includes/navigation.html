@@ -1,91 +1,348 @@
-<!-- Include Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-transparent fixed-top" style="backdrop-filter: blur(10px); background-color: rgba(255, 255, 255, 0.5); width: 100%; z-index: 1000; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-    <div class="container-fluid">
-        <div class="navbar-wrapper" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-            <div style="display: flex; align-items: center;">
-                <div class="navbar-toggle d-inline">
-                    <button type="button" class="navbar-toggler">
-                        <span class="navbar-toggler-bar bar1"></span>
-                        <span class="navbar-toggler-bar bar2"></span>
-                        <span class="navbar-toggler-bar bar3"></span>
-                    </button>
-                </div>
-                <div class="photo" style="display: flex; align-items: center; height: 60px;">
-                    <img src="{{ ASSETS_ROOT }}/img/zgzl.png" alt="Profile Photo" style="object-fit: contain; margin-right: 15px;">
-                    <a class="navbar-brand" href="javascript:void(0)" style="font-size: 24px; flex-shrink: 0; margin-left: 36px; color: #ffffff; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);">中工智联 ｜ AI 智能无人机巡检系统</a>
-                </div>
-            </div>
-            <ul class="navbar-nav mx-auto" style="display: flex; align-items: center;">
-                <li class="nav-item {% if 'index' in segment %} active {% endif %}">
-                    <a href="/" class="nav-link" style="display: flex; align-items: center;">
-                        <i class="fas fa-map-marked-alt" style="font-size: 24px; color: #ffffff;"></i> <!-- 更换为地图icon -->
-                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px; color: #ffffff; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);">地图纵览</h5>
+<nav class="navbar navbar-expand-lg fixed-top"
+     style="backdrop-filter: blur(10px); background-color: rgba(0, 0, 0, 0.8); width: 100%; z-index: 1000; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); height: 60px;">
+    <div class="container-fluid" style="padding: 0 20px; display: flex; justify-content: center; align-items: center;">
+        <div class="navbar-container" style="display: flex; align-items: center;">
+            <!-- Logo -->
+            <a class="navbar-brand d-flex align-items-center" href="/" style="font-size: 22px; color: #fff; margin-right: 30px;">
+                <img src="{{ ASSETS_ROOT }}/img/zgzl.png" alt="Logo" style="height: 30px; vertical-align: middle;">
+            </a>
+
+            <!-- Navigation Menu -->
+            <ul class="navbar-nav" style="display: flex; align-items: center; margin-left: 80px">
+                <!-- AI 视觉 -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link" id="aiVisionToggle"
+                       style="font-size: 16px; padding: 15px 20px;" onclick="toggleMenu('aiVisionMenu')">
+                        AI 视觉
                     </a>
                 </li>
-                <li class="nav-item {% if 'live' in segment %} active {% endif %}">
-                    <a href="{% url 'live' %}" class="nav-link" style="display: flex; align-items: center;">
-                        <i class="fas fa-video" style="font-size: 24px; color: #ffffff;"></i> <!-- 更换为视频图标 -->
-                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px; color: #ffffff; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);">监控管理</h5>
+                <!-- 无人机管理 -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link" id="droneManagementToggle"
+                       style="font-size: 16px; padding: 15px 20px;" onclick="toggleMenu('droneManagementMenu')">
+                        无人机管理
                     </a>
                 </li>
-                <li class="nav-item {% if 'device_list' in segment %} active {% endif %}">
-                    <a href="{% url 'device_list' %}" class="nav-link" style="display: flex; align-items: center;">
-                        <i class="fas fa-desktop" style="font-size: 24px; color: #ffffff;"></i> <!-- 更换为无人机图标 -->
-                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px; color: #ffffff; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);">设备详情</h5>
+                <!-- 共享服务 -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link" id="sharedServicesToggle"
+                       style="font-size: 16px; padding: 15px 20px;" onclick="toggleMenu('sharedServicesMenu')">
+                        共享服务
                     </a>
                 </li>
-                <li class="nav-item {% if 'notifications' in segment %} active {% endif %}">
-                    <a href="{% url 'notifications' %}" class="nav-link" style="display: flex; align-items: center;">
-                        <i class="fas fa-bell" style="font-size: 24px; color: #ffffff;"></i> <!-- 更换为通知图标 -->
-                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px; color: #ffffff; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);">预警信息</h5>
-                    </a>
-                </li>
-                <li class="nav-item {% if 'user' in segment %} active {% endif %}">
-                    <a href="{% url 'user_data' %}" class="nav-link" style="display: flex; align-items: center;">
-                        <i class="fas fa-user-circle" style="font-size: 24px; color: #ffffff;"></i> <!-- 更换为用户图标 -->
-                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px; color: #ffffff; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);">账户设置</h5>
-                    </a>
-                </li>
-                {% if user.is_admin %} <!-- 仅显示“后台管理”按钮如果用户是管理员 -->
-                <li class="nav-item {% if 'tables' in segment %} active {% endif %}">
-                    <a href="{% url 'admin_dashboard' %}" class="nav-link" style="display: flex; align-items: center;">
-                        <i class="fas fa-cogs" style="font-size: 24px; color: #ffffff;"></i> <!-- 更换为设置图标 -->
-                        <h5 style="margin: 0; padding-left: 15px; font-size: 18px; color: #ffffff; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);">后台管理</h5>
-                    </a>
-                </li>
-                {% endif %}
             </ul>
         </div>
     </div>
 </nav>
-<!-- End Navbar -->
 
+<!-- Divs for Menus -->
+<!-- 地图纵览菜单 -->
+<div id="mapOverviewMenu" class="custom-menu">
+    <div class="menu-content">
+        <a class="menu-item" href="#">区域地图</a>
+        <a class="menu-item" href="#">实时监控</a>
+        <a class="menu-item" href="#">历史记录</a>
+    </div>
+</div>
+
+<!-- AI 视觉菜单 -->
+<div id="aiVisionMenu" class="custom-menu">
+    <div class="menu-content">
+        <ul class="menu-list" style="list-style-type: none; padding: 0; margin: 0;">
+            <!-- 大标题：无人机直播 -->
+            <li class="menu-item" style="margin-bottom: 20px;">
+                <a href="#" style="font-size: 18px; font-weight: bold;">无人机直播</a>
+            </li>
+
+            <!-- 大标题：预警信息 -->
+            <li class="menu-item" style="margin-bottom: 20px;">
+                <a href="#" style="font-size: 18px; font-weight: bold;">预警信息</a>
+                <!-- 预警信息下的子页面 -->
+                <ul class="submenu-list" style="list-style-type: none; padding-left: 20px; margin-top: 10px;">
+                    <li class="submenu-item" style="margin-bottom: 10px;">
+                        <a href="#">火点检测</a>
+                    </li>
+                    <li class="submenu-item" style="margin-bottom: 10px;">
+                        <a href="#">水表检测</a>
+                    </li>
+                    <li class="submenu-item" style="margin-bottom: 10px;">
+                        <a href="#">违建检测</a>
+                    </li>
+                    <li class="submenu-item" style="margin-bottom: 10px;">
+                        <a href="#">人员聚集</a>
+                    </li>
+                    <li class="submenu-item" style="margin-bottom: 10px;">
+                        <a href="#">交通堵塞</a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- 大标题：AI 服务 -->
+            <li class="menu-item" style="margin-bottom: 20px;">
+                <a href="#" style="font-size: 18px; font-weight: bold;">AI 服务</a>
+            </li>
+
+            <!-- 大标题：第三方接入 -->
+            <li class="menu-item" style="margin-bottom: 20px;">
+                <a href="#" style="font-size: 18px; font-weight: bold;">第三方接入</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- 无人机管理菜单 -->
+<div id="droneManagementMenu" class="custom-menu">
+    <div class="menu-content">
+        <ul class="menu-list" style="list-style-type: none; padding: 0; margin: 0;">
+            <!-- 大标题：我的无人机 -->
+            <li class="menu-item" style="margin-bottom: 20px;">
+                <a href="#" style="font-size: 18px; font-weight: bold;">我的无人机</a>
+            </li>
+
+            <!-- 大标题：无人机后台 -->
+            <li class="menu-item" style="margin-bottom: 20px;">
+                <a href="#" style="font-size: 18px; font-weight: bold;">无人机后台</a>
+            </li>
+
+            <!-- 大标题：购买无人机 -->
+            <li class="menu-item" style="margin-bottom: 20px;">
+                <a href="#" style="font-size: 18px; font-weight: bold;">购买无人机</a>
+            </li>
+
+            <!-- 大标题：租赁无人机 -->
+            <li class="menu-item" style="margin-bottom: 20px;">
+                <a href="#" style="font-size: 18px; font-weight: bold;">租赁无人机</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- 共享服务菜单 -->
+<div id="sharedServicesMenu" class="custom-menu">
+    <div class="menu-content">
+        <ul class="menu-list" style="list-style-type: none; padding: 0; margin: 0; display: flex; justify-content: space-between;">
+            <!-- 巡检服务 -->
+            <li class="menu-item" style="margin-right: 20px;">
+                <a href="#" style="font-size: 18px; font-weight: bold;">巡检服务</a>
+                <ul class="submenu-list" style="list-style-type: none; padding-left: 20px; margin-top: 10px;">
+                    <li class="submenu-item" style="margin-bottom: 10px;">
+                        <a href="#">AI 识别</a>
+                    </li>
+                    <li class="submenu-item" style="margin-bottom: 10px;">
+                        <a href="#">加盟</a>
+                    </li>
+                    <li class="submenu-item" style="margin-bottom: 10px;">
+                        <a href="#">联合投资</a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- 影像 -->
+            <li class="menu-item" style="margin-right: 20px;">
+                <a href="#" style="font-size: 18px; font-weight: bold;">影像</a>
+                <ul class="submenu-list" style="list-style-type: none; padding-left: 20px; margin-top: 10px;">
+                    <li class="submenu-item" style="margin-bottom: 10px;">
+                        <a href="#">正摄影像</a>
+                    </li>
+                    <li class="submenu-item" style="margin-bottom: 10px;">
+                        <a href="#">倾斜影像</a>
+                    </li>
+                    <li class="submenu-item" style="margin-bottom: 10px;">
+                        <a href="#">3D 建模</a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- 仪征（经开/大数据） -->
+            <li class="menu-item" style="margin-right: 20px;">
+                <a href="#" style="font-size: 18px; font-weight: bold;">仪征（经开/大数据）</a>
+            </li>
+
+            <!-- 委办单位无人机资产 -->
+            <li class="menu-item" style="margin-right: 20px;">
+                <a href="#" style="font-size: 18px; font-weight: bold;">委办单位无人机资产</a>
+            </li>
+
+            <!-- 政府单位 -->
+            <li class="menu-item" style="margin-right: 20px;">
+                <a href="#" style="font-size: 18px; font-weight: bold;">政府单位</a>
+                <ul class="submenu-list" style="list-style-type: none; padding-left: 20px; margin-top: 10px;">
+                    <li class="submenu-item" style="margin-bottom: 10px;">
+                        <a href="#">公安</a>
+                    </li>
+                    <li class="submenu-item" style="margin-bottom: 10px;">
+                        <a href="#">城管</a>
+                    </li>
+                    <li class="submenu-item" style="margin-bottom: 10px;">
+                        <a href="#">文旅</a>
+                    </li>
+                    <li class="submenu-item" style="margin-bottom: 10px;">
+                        <a href="#">环保</a>
+                    </li>
+                    <li class="submenu-item" style="margin-bottom: 10px;">
+                        <a href="#">应急</a>
+                    </li>
+                    <li class="submenu-item" style="margin-bottom: 10px;">
+                        <a href="#">工业</a>
+                    </li>
+                    <li class="submenu-item" style="margin-bottom: 10px;">
+                        <a href="#">乡村振兴</a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- 共享充电 -->
+            <li class="menu-item" style="margin-right: 20px;">
+                <a href="#" style="font-size: 18px; font-weight: bold;">共享充电</a>
+            </li>
+
+            <!-- 光伏基站 -->
+            <li class="menu-item">
+                <a href="#" style="font-size: 18px; font-weight: bold;">光伏基站</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- Style -->
 <style>
-    .nav-link {
-        transition: background-color 0.3s, transform 0.3s;
-        border-radius: 8px; /* 设置圆角 */
-        padding: 8px 15px; /* 添加内边距使按钮更显著 */
-        color: #ffffff; /* 设置文本颜色为白色 */
-        font-weight: 500; /* 设置文本粗细 */
+    * {
+        color: #fff; /* 全局字体颜色为白色 */
     }
-    .nav-link:hover {
-        transform: scale(1.05);
-        background-color: rgba(0, 123, 255, 0.1); /* 悬停时浅蓝色背景 */
+
+    .custom-menu {
+        width: 100vw; /* 宽度为全屏宽度 */
+        background-color: rgba(0, 0, 0, 0.8); /* 深色半透明背景 */
+        border-bottom: 1px solid #555; /* 边框颜色加深 */
+        position: absolute;
+        top: 60px; /* 调整为紧挨着导航栏展开 */
+        left: 0;
+        z-index: 999; /* 确保位于其他元素之上 */
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); /* 调整阴影效果 */
+        overflow: hidden; /* 确保隐藏未展开部分 */
+        height: 0; /* 初始高度为 0，隐藏菜单 */
+        opacity: 0; /* 初始透明度为 0 */
+        transition: height 0.4s ease, opacity 0.4s ease; /* 设置过渡效果 */
     }
-    .nav-link:active {
-        background-color: rgba(0, 123, 255, 0.2); /* 点击时稍深的蓝色背景 */
-        transform: scale(0.95); /* 点击时稍微缩小 */
+
+    .custom-menu.open {
+        height: auto; /* 动态根据内容自动调整高度 */
+        opacity: 1; /* 打开时的透明度 */
     }
+
+    .menu-content {
+        display: flex;
+        justify-content: space-around;
+        padding: 10px 0;
+        margin: 0 50px; /* 设置左右边距为 50px */
+    }
+
+    .menu-item {
+        padding: 10px 20px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+        margin-bottom: 20px; /* 每个大标题之间的间距 */
+    }
+
+    .menu-item:hover {
+        background-color: rgba(255, 255, 255, 0.2); /* 悬停时的浅色背景 */
+    }
+
+    .menu-content {
+        display: flex;
+        justify-content: space-around;
+        padding: 10px 0;
+        margin: 0 50px; /* 设置左右边距为 50px */
+    }
+.menu-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex; /* 使用 flexbox 实现横向排列 */
+    justify-content: space-between; /* 保持菜单项间距均匀 */
+}
+
+.menu-item {
+    margin-right: 40px; /* 增加列之间的间距为 40px */
+}
+
+.menu-item a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px; /* 设置大标题的字体大小 */
+    font-weight: bold; /* 加粗大标题 */
+    display: block;
+    padding: 5px 15px;
+    transition: color 0.3s ease; /* 添加文字颜色过渡效果 */
+}
+
+.menu-item a:hover {
+    color: #f0f0f0; /* 鼠标悬停时文字变亮 */
+}
+
+.submenu-list {
+    list-style-type: none;
+    padding-left: 20px; /* 子菜单的缩进 */
+    margin-top: 10px;
+}
+
+.submenu-item {
+    margin-bottom: 10px; /* 子菜单项之间的间距 */
+}
+
+.submenu-item a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px; /* 子菜单字体大小 */
+    display: block;
+    padding: 5px 15px;
+    transition: color 0.3s ease; /* 添加文字颜色过渡效果 */
+}
+
+.submenu-item a:hover {
+    color: #f0f0f0; /* 鼠标悬停时子菜单文字变亮 */
+}
     .navbar-toggler {
-        border: none; /* 隐藏切换按钮边框 */
+        border: none;
     }
+
     .navbar-toggler-bar {
-        background-color: #007bff; /* 切换按钮条纹颜色 */
+        background-color: #007bff;
     }
+
     .navbar-brand, .nav-link h5 {
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* 添加文字阴影 */
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
     }
 </style>
+
+<!-- JavaScript -->
+<script>
+    function toggleMenu(menuId) {
+        // 隐藏其他菜单
+        var menus = document.querySelectorAll('.custom-menu');
+        menus.forEach(function(menu) {
+            if (menu.id !== menuId) {
+                menu.classList.remove('open');
+            }
+        });
+
+        // 切换当前菜单的显示状态
+        var menu = document.getElementById(menuId);
+        if (menu.classList.contains('open')) {
+            menu.classList.remove('open');
+        } else {
+            menu.classList.add('open');
+        }
+    }
+
+    // 点击页面其他地方时关闭菜单
+    window.onclick = function(event) {
+        var menus = document.querySelectorAll('.custom-menu');
+        if (!event.target.matches('.nav-link')) {
+            menus.forEach(function(menu) {
+                menu.classList.remove('open');
+            });
+        }
+    };
+</script>

@@ -17,7 +17,7 @@ from django.template import loader
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from django.shortcuts import render, get_object_or_404
+
 from .forms import DroneForm
 from .forms import EditProfileForm
 from .models import CustomUser
@@ -41,7 +41,8 @@ ELocalStorageKey = {
     "GatewayOnline": 'gateway_online'
 }
 
-BACKEND = getattr(settings, 'BACKEND_URL', 'http://1.13.23.62:5000')
+BACKEND = getattr(settings, 'BACKEND_URL', 'http://119.45.207.49:5000')
+BACKEND_URL = "119.45.207.49"
 
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
@@ -63,13 +64,16 @@ def index(request):
     fire_points = []
     for drone_sn in drone_sns:
         # 请求外部接口获取数据
-        response = requests.post('http://1.13.23.62:5000/getInfoBySN', json={'droneSN': drone_sn})
+        response = requests.post(f'http://{BACKEND_URL}:5000/getInfoBySN', json={'droneSN': drone_sn})
         if response.status_code == 200:
             data = response.json()
             notifications.extend(data)
             # 处理通知数据
-            fire_points.extend([(item['Latitude'], item['Longitude']) for item in data if
+            fire_points.extend([(float(item['Latitude']) - 7.1, float(item['Longitude']) + 1.9) for item in data if
                                 float(item['Latitude']) > 0 and float(item['Longitude']) > 0])
+    for drone in drones:
+        print(drone.latitude, drone.longitude)
+    print(fire_points)
 
     return render(request, 'home/index.html', {
         'user': user,
@@ -327,7 +331,7 @@ def admin_dashboard(request):
 
     for drone_sn in drone_sns:
         # 请求外部接口获取数据
-        response = requests.post('http://1.13.23.62:5000/getInfoBySN', json={'droneSN': drone_sn})
+        response = requests.post(f'http://{BACKEND_URL}:5000/getInfoBySN', json={'droneSN': drone_sn})
         if response.status_code == 200:
             notifications.extend(response.json())
 
@@ -403,7 +407,7 @@ def notification_detail(request):
     if info == '火情监控':
         for drone_sn in drone_sns:
             # 请求外部接口获取数据
-            response = requests.post('http://1.13.23.62:5000/getInfoBySN', json={'droneSN': drone_sn})
+            response = requests.post(f'http://{BACKEND_URL}:5000/getInfoBySN', json={'droneSN': drone_sn})
             if response.status_code == 200:
                 data.extend(response.json())
 
@@ -524,7 +528,7 @@ def admin_dashboard_delete_notifications(request):
 
             # Call the external API to delete the notification
             response = requests.post(
-                'http://1.13.23.62:5000/delFireData',
+                f'http://{BACKEND_URL}:5000/delFireData',
                 json={
                     'droneSN': drone_sn,
                     'timeStamp': timestamp
@@ -554,6 +558,7 @@ def live_view(request, drone_sn=None):
     print(f"{selected_drone=}")
     return render(request, 'home/live_view.html', context)
 
+
 @login_required()
 def live_view_drone(request, drone_sn=None):
     print(f"{drone_sn=}")
@@ -569,9 +574,44 @@ def live_view_drone(request, drone_sn=None):
     print(f"{selected_drone=}")
     return render(request, 'home/live_view.html', context)
 
+@login_required()
+def live_view_drone_2(request, drone_sn=None):
+    print(f"{drone_sn=}")
+    drones = Drone.objects.filter(user=request.user)  # 获取所有无人机
+    selected_drone = None
+
+    if drone_sn:
+        selected_drone = drones.filter(drone_sn=drone_sn).first()  # 根据序列号获取无人机
+    context = {
+        'drones': drones,
+        'selected_drone': selected_drone,
+    }
+    print(f"{selected_drone=}")
+    return render(request, 'home/live_view_2.html', context)
+
+
 def live(request):
     # 获取所有无人机的列表
     drones = Drone.objects.all()
     # 渲染监控管理页面，并将无人机列表传递给模板
     return render(request, 'home/live.html', {'drones': drones})
 
+
+def ai(request):
+    from zhipuai import ZhipuAI
+    client = ZhipuAI(api_key="")  # 请填写您自己的APIKey
+    response = client.chat.completions.create(
+        model="glm-4-0520",  # 填写需要调用的模型编码
+        messages=[
+            {"role": "system", "content": "你是一个乐于解答各种问题的助手，你的任务是为用户提供专业、准确、有见地的建议。"},
+            {"role": "user",
+             "content": "我对太阳系的行星非常感兴趣，特别是土星。请提供关于土星的基本信息，包括其大小、组成、环系统和任何独特的天文现象。"},
+        ],
+        stream=True,
+    )
+    for chunk in response:
+        print(chunk.choices[0].delta)
+
+
+def stream_page(request):
+    return render(request, 'home/stream.html')
