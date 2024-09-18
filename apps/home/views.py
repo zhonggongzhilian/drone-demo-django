@@ -574,6 +574,7 @@ def live_view_drone(request, drone_sn=None):
     print(f"{selected_drone=}")
     return render(request, 'home/live_view.html', context)
 
+
 @login_required()
 def live_view_drone_2(request, drone_sn=None):
     print(f"{drone_sn=}")
@@ -615,3 +616,47 @@ def ai(request):
 
 def stream_page(request):
     return render(request, 'home/stream.html')
+
+
+def templates(request):
+    return render(request, 'home/template.html')
+
+
+def ai_service(request):
+    return render(request, 'home/ai_vision/ai_service.html')
+
+
+def third_party_api(request):
+    return render(request, 'home/ai_vision/third_party_api.html')
+
+
+def buy_drones(request):
+    return render(request, 'home/drone_manage/buy_drones.html')
+
+
+def rent_drones(request):
+    return render(request, 'home/drone_manage/rent_drones.html')
+
+
+def inspection_service(request):
+    return render(request, 'home/share_service/inspection_service.html')
+
+
+def photography(request):
+    return render(request, 'home/share_service/photography.html')
+
+
+def yizheng(request):
+    return render(request, 'home/share_service/yizheng.html')
+
+
+def government(request):
+    return render(request, 'home/share_service/government.html')
+
+
+def photovoltaics(request):
+    return render(request, 'home/share_service/photovoltaics.html')
+
+
+def order(request):
+    return render(request, 'home/order.html')

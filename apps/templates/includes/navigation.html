@@ -52,12 +52,12 @@
         <ul class="menu-list" style="list-style-type: none; padding: 0; margin: 0;">
             <!-- 大标题：无人机直播 -->
             <li class="menu-item" style="margin-bottom: 20px;">
-                <a href="#" style="font-size: 18px; font-weight: bold;">无人机直播</a>
+                <a href="{% url 'live' %} " style="font-size: 18px; font-weight: bold;">无人机直播</a>
             </li>
 
             <!-- 大标题：预警信息 -->
             <li class="menu-item" style="margin-bottom: 20px;">
-                <a href="#" style="font-size: 18px; font-weight: bold;">预警信息</a>
+                <a href="{% url 'notifications' %}" style="font-size: 18px; font-weight: bold;">预警信息</a>
                 <!-- 预警信息下的子页面 -->
                 <ul class="submenu-list" style="list-style-type: none; padding-left: 20px; margin-top: 10px;">
                     <li class="submenu-item" style="margin-bottom: 10px;">
@@ -80,12 +80,12 @@
 
             <!-- 大标题：AI 服务 -->
             <li class="menu-item" style="margin-bottom: 20px;">
-                <a href="#" style="font-size: 18px; font-weight: bold;">AI 服务</a>
+                <a href="{% url 'ai_service' %}" style="font-size: 18px; font-weight: bold;">AI 服务</a>
             </li>
 
             <!-- 大标题：第三方接入 -->
             <li class="menu-item" style="margin-bottom: 20px;">
-                <a href="#" style="font-size: 18px; font-weight: bold;">第三方接入</a>
+                <a href="{% url 'third_party_api' %}" style="font-size: 18px; font-weight: bold;">第三方接入</a>
             </li>
         </ul>
     </div>
@@ -97,22 +97,22 @@
         <ul class="menu-list" style="list-style-type: none; padding: 0; margin: 0;">
             <!-- 大标题：我的无人机 -->
             <li class="menu-item" style="margin-bottom: 20px;">
-                <a href="#" style="font-size: 18px; font-weight: bold;">我的无人机</a>
+                <a href="{% url 'device_list' %}" style="font-size: 18px; font-weight: bold;">我的无人机</a>
             </li>
 
             <!-- 大标题：无人机后台 -->
             <li class="menu-item" style="margin-bottom: 20px;">
-                <a href="#" style="font-size: 18px; font-weight: bold;">无人机后台</a>
+                <a href="{% url 'admin_dashboard' %}" style="font-size: 18px; font-weight: bold;">无人机后台</a>
             </li>
 
             <!-- 大标题：购买无人机 -->
             <li class="menu-item" style="margin-bottom: 20px;">
-                <a href="#" style="font-size: 18px; font-weight: bold;">购买无人机</a>
+                <a href="{% url 'buy_drones' %}" style="font-size: 18px; font-weight: bold;">购买无人机</a>
             </li>
 
             <!-- 大标题：租赁无人机 -->
             <li class="menu-item" style="margin-bottom: 20px;">
-                <a href="#" style="font-size: 18px; font-weight: bold;">租赁无人机</a>
+                <a href="{% url 'rent_drones' %}" style="font-size: 18px; font-weight: bold;">租赁无人机</a>
             </li>
         </ul>
     </div>
@@ -124,7 +124,7 @@
         <ul class="menu-list" style="list-style-type: none; padding: 0; margin: 0; display: flex; justify-content: space-between;">
             <!-- 巡检服务 -->
             <li class="menu-item" style="margin-right: 20px;">
-                <a href="#" style="font-size: 18px; font-weight: bold;">巡检服务</a>
+                <a href="{% url 'inspection_service' %}" style="font-size: 18px; font-weight: bold;">巡检服务</a>
                 <ul class="submenu-list" style="list-style-type: none; padding-left: 20px; margin-top: 10px;">
                     <li class="submenu-item" style="margin-bottom: 10px;">
                         <a href="#">AI 识别</a>
@@ -140,7 +140,7 @@
 
             <!-- 影像 -->
             <li class="menu-item" style="margin-right: 20px;">
-                <a href="#" style="font-size: 18px; font-weight: bold;">影像</a>
+                <a href="{% url 'photography' %}" style="font-size: 18px; font-weight: bold;">影像</a>
                 <ul class="submenu-list" style="list-style-type: none; padding-left: 20px; margin-top: 10px;">
                     <li class="submenu-item" style="margin-bottom: 10px;">
                         <a href="#">正摄影像</a>
@@ -156,50 +156,19 @@
 
             <!-- 仪征（经开/大数据） -->
             <li class="menu-item" style="margin-right: 20px;">
-                <a href="#" style="font-size: 18px; font-weight: bold;">仪征（经开/大数据）</a>
-            </li>
-
-            <!-- 委办单位无人机资产 -->
-            <li class="menu-item" style="margin-right: 20px;">
-                <a href="#" style="font-size: 18px; font-weight: bold;">委办单位无人机资产</a>
+                <a href="{% url 'yizheng' %}" style="font-size: 18px; font-weight: bold;">仪征（经开/大数据）</a>
             </li>
 
             <!-- 政府单位 -->
             <li class="menu-item" style="margin-right: 20px;">
-                <a href="#" style="font-size: 18px; font-weight: bold;">政府单位</a>
+                <a href="{% url 'government' %}" style="font-size: 18px; font-weight: bold;">政务服务</a>
                 <ul class="submenu-list" style="list-style-type: none; padding-left: 20px; margin-top: 10px;">
-                    <li class="submenu-item" style="margin-bottom: 10px;">
-                        <a href="#">公安</a>
-                    </li>
-                    <li class="submenu-item" style="margin-bottom: 10px;">
-                        <a href="#">城管</a>
-                    </li>
-                    <li class="submenu-item" style="margin-bottom: 10px;">
-                        <a href="#">文旅</a>
-                    </li>
-                    <li class="submenu-item" style="margin-bottom: 10px;">
-                        <a href="#">环保</a>
-                    </li>
-                    <li class="submenu-item" style="margin-bottom: 10px;">
-                        <a href="#">应急</a>
-                    </li>
-                    <li class="submenu-item" style="margin-bottom: 10px;">
-                        <a href="#">工业</a>
-                    </li>
-                    <li class="submenu-item" style="margin-bottom: 10px;">
-                        <a href="#">乡村振兴</a>
-                    </li>
                 </ul>
-            </li>
-
-            <!-- 共享充电 -->
-            <li class="menu-item" style="margin-right: 20px;">
-                <a href="#" style="font-size: 18px; font-weight: bold;">共享充电</a>
             </li>
 
             <!-- 光伏基站 -->
             <li class="menu-item">
-                <a href="#" style="font-size: 18px; font-weight: bold;">光伏基站</a>
+                <a href="{% url 'photovoltaics' %}" style="font-size: 18px; font-weight: bold;">光伏基站</a>
             </li>
         </ul>
     </div>

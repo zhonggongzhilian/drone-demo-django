@@ -1,0 +1,276 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}仪征大数据产业园{% endblock %}
+
+{% block stylesheets %}
+<style>
+  /* 设置视频背景样式 */
+  .video-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -2;
+    object-fit: cover;
+    filter: brightness(0.7); /* 调整视频亮度以提高内容可读性 */
+  }
+
+  /* 半透明遮罩层 */
+  .video-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4); /* 黑色半透明遮罩 */
+    z-index: -1;
+  }
+
+  /* 内容覆盖层 */
+  .content-overlay {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    align-items: flex-start; /* 垂直顶部对齐 */
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 0; /* 移除默认内边距 */
+    width: 100%; /* 页面宽度设为 100% */
+  }
+
+  /* 卡片样式 */
+  .main-card {
+    width: 66.6667%; /* 2/3 的宽度 */
+    height: 100vh; /* 高度为屏幕高度减去 100px */
+    background: #000; /* 黑色背景 */
+    padding: 20px;
+    box-sizing: border-box;
+    color: #fff; /* 白色文本 */
+    overflow-y: auto; /* 内容溢出时出现滚动条 */
+    /* 移除圆角和阴影 */
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    margin-top: 50px; /* 卡片距离顶部 100px */
+  }
+
+  /* 响应式调整 */
+  @media (max-width: 768px) {
+    .main-card {
+      width: 90%;
+      height: auto; /* 高度自适应 */
+      max-height: calc(100vh - 100px);
+      margin-top: 100px; /* 保持顶部间距 */
+    }
+  }
+
+  /* 卡片标题样式 */
+  .main-card .card-title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  /* 示例内容样式 */
+  .main-card .card-content p,
+  .main-card .card-content ul {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #fff; /* 确保文本为白色 */
+  }
+
+  /* 自定义滚动条样式（可选） */
+  .main-card::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .main-card::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .main-card::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+  }
+  /* 保留原有样式 */
+
+  /* 分隔线样式 */
+  .section-separator {
+    border-bottom: 1px solid #444; /* 分隔线颜色 */
+    padding-bottom: 40px; /* 分隔线下方间距 */
+    margin-bottom: 40px; /* 分隔线上方间距 */
+  }
+
+  /* 标题图片样式 */
+  .title-image {
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
+    margin: 20px auto;
+    display: block;
+  }
+
+  /* 内容部分样式 */
+  .content-section {
+    color: #fff;
+    margin-top: 20px;
+  }
+
+  .content-section h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  .content-section p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    text-align: justify;
+  }
+
+  .content-section ul {
+    list-style: disc;
+    padding-left: 40px;
+    margin-bottom: 15px;
+  }
+
+  .content-section ul li {
+    margin-bottom: 10px;
+    font-size: 1rem;
+  }
+
+  /* 联系方式样式 */
+  .contact-info {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .contact-info a {
+    color: #007bff;
+    text-decoration: none;
+  }
+
+  .contact-info a:hover {
+    text-decoration: underline;
+  }
+
+  /* 图片响应式调整 */
+  @media (max-width: 768px) {
+    .content-section ul {
+      padding-left: 20px;
+      list-style-position: inside;
+    }
+  }
+
+  /* 按钮样式 */
+  .btn-primary {
+    background: #007bff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 10px;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-primary:hover {
+    background: #0056b3;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+  <!-- 背景视频 -->
+  <video autoplay muted loop class="video-background">
+    <source src="{% static 'assets/img/bgv.mp4' %}" type="video/mp4">
+    您的浏览器不支持 HTML5 视频。
+  </video>
+
+  <!-- 半透明遮罩层 -->
+  <div class="video-overlay"></div>
+
+  <!-- 内容覆盖层 -->
+  <div class="content-overlay">
+    <div class="main-card">
+      <h2 class="card-title">仪征大数据产业园</h2>
+      
+      <!-- 标题图片 -->
+      <img src="https://p8.itc.cn/q_70/images03/20220213/df61a1211f484758b3f0628802e611a6.jpeg" alt="仪征大数据产业园" class="title-image">
+
+      <div class="card-content">
+        <!-- 历史 -->
+        <section class="section-separator">
+          <div class="content-section">
+            <h3>历史</h3>
+            <p>仪征大数据产业园成立于2010年，旨在打造一个集数据处理、存储、分析于一体的高科技产业园区。自成立以来，产业园经历了多次扩建和升级，现已成为区域内重要的科技创新基地。</p>
+          </div>
+        </section>
+
+        <!-- 发展现状 -->
+        <section class="section-separator">
+          <div class="content-section">
+            <h3>发展现状</h3>
+            <p>截至2024年，仪征大数据产业园已经吸引了超过200家科技企业入驻，其中包括多家知名的人工智能和大数据分析公司。产业园内配备了先进的基础设施和高效的运营管理体系，为企业的发展提供了坚实的支持。</p>
+            <ul>
+              <li>超过200家科技企业入驻</li>
+              <li>配备先进的数据中心</li>
+              <li>提供全面的技术支持</li>
+              <li>拥有高效的运营管理体系</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 地理位置 -->
+        <section class="section-separator">
+          <div class="content-section">
+            <h3>地理位置</h3>
+            <p>仪征大数据产业园位于江苏省扬州市仪征市经济开发区，地处长三角经济圈核心区域，交通便捷。周边拥有完善的交通网络，包括高速公路、铁路和航空枢纽，为企业的物流和人才引进提供了极大的便利。</p>
+            <ul>
+              <li>位于江苏省扬州市仪征市经济开发区</li>
+              <li>周边配套设施完善</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 产业结构 -->
+        <section class="section-separator">
+          <div class="content-section">
+            <h3>产业结构</h3>
+            <p>仪征大数据产业园的产业结构多元化，涵盖了数据处理与存储、人工智能应用、大数据分析、云计算等多个领域。产业园致力于推动科技创新和产业升级，促进区域经济的可持续发展。</p>
+            <ul>
+              <li>数据处理与存储</li>
+              <li>人工智能应用</li>
+              <li>大数据分析</li>
+              <li>云计算与网络服务</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 联系方式 -->
+        <section class="section-separator">
+          <div class="content-section contact-info">
+            <h3>联系方式</h3>
+            <p>地址：江苏省扬州市仪征市经济开发区大数据路123号</p>
+            <p>电话：</p>
+            <p>邮箱：</p>
+            <p>网站：<a href="https://www.yizhengbdpark.com" target="_blank">www.yizhengbdpark.com</a></p>
+            <a href="#" class="btn-primary">立即联系</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+{% endblock %}

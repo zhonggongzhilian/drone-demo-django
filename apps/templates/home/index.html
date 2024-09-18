@@ -4,143 +4,261 @@
 
 {% load static %}
 
-<!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
+<!-- 引入 Font Awesome 图标库 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha384-Xxq4VAVrJnwy3UeC0T0HOGTvzJShBDjtWwxyo5jv2uCEdCIs6fTCxyRhYpI5b2FF" crossorigin="anonymous">
+
 <style>
     #mapContainer {
-    width: 100%;
-    height: 100vh; /* 调整地图高度为页面高度 */
-    border-radius: 15px; /* 设置四个角为圆角 */
-    overflow: hidden;
-}
-
-.content {
-    padding: 0;
-    margin: 0;
-}
-
-.card-container {
-    position: absolute;
-    right: 10px;
-    top: 150px; /* 离顶部 150px */
-    width: 20vw; /* 屏幕宽度的 1/5 */
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background: rgba(255, 255, 255, 0.3); /* 半透明背景 */
-    border-radius: 15px;
-    backdrop-filter: blur(10px); /* 毛玻璃效果 */
-    padding: 10px;
-    z-index: 1000; /* 确保卡片在最前面 */
-}
-
-.card-info {
-    background: rgba(255, 255, 255, 0.4); /* 卡片背景半透明效果 */
-    border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 卡片阴影效果 */
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-.card-info:hover {
-    background-color: rgba(255, 255, 255, 1); /* 鼠标悬停效果 */
-    transform: scale(1.05); /* 放大效果 */
-}
-
-.control-panel {
-    position: fixed;
-    bottom: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    background-color: rgba(44, 62, 80, 0.4); /* 半透明背景 */
-    padding: 10px;
-    border-radius: 10px;
-    z-index: 999; /* 确保按钮在最前面 */
-    backdrop-filter: blur(10px); /* 毛玻璃效果 */
-}
-
-.control-panel button {
-    transition: background-color 0.3s, transform 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(44, 62, 80, 0.4); /* 按钮半透明背景 */
-    color: #ecf0f1;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-.control-panel button i {
-    margin-right: 8px;
-    flex-shrink: 0;
-}
-
-.control-panel button:hover {
-    transform: scale(1.1);
-    background-color: rgba(44, 62, 80, 0.6); /* 按钮悬停效果 */
-}
-
-.marker-shadow {
-    filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.5));
-}
-
-.marker-highlight {
-    animation: markerGrow 0.3s forwards; /* 标记变大动画 */
-}
-
-.marker-normal {
-    animation: markerShrink 0.3s forwards; /* 标记缩小动画 */
-}
-
-@keyframes markerGrow {
-    from {
-        transform: scale(1);
+        width: 100%;
+        height: 100vh;
+        border-radius: 15px;
+        overflow: hidden;
     }
-    to {
-        transform: scale(1.4); /* 标记变大的比例 */
-    }
-}
 
-@keyframes markerShrink {
-    from {
-        transform: scale(1.4); /* 缩小动画从大开始 */
+    .content {
+        padding: 0;
+        margin: 0;
     }
-    to {
-        transform: scale(1); /* 缩小到原始大小 */
+
+    .card-container {
+        position: fixed;
+        right: 20px;
+        bottom: 80px;
+        width: 20vw;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+        padding: 10px;
+        z-index: 1000;
+        transform-origin: bottom right;
+        transform: scaleY(0);
+        transition: transform 0.3s ease-in-out;
     }
-}
 
-.toast {
-    position: fixed;
-    bottom: 80px; /* 位置高于 control-panel */
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 10px 20px;
-    background-color: rgba(255, 255, 255, 0.7); /* 白色半透明毛玻璃效果 */
-    color: #000000;
-    border-radius: 5px;
-    z-index: 1000;
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-    backdrop-filter: blur(10px); /* 毛玻璃效果 */
-}
+    .card-container.visible {
+        transform: scaleY(1);
+    }
 
-.toast-show {
-    opacity: 1;
-}
+    .card-info {
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: 10px;
+        padding: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .card-info:hover {
+        background-color: rgba(255, 255, 255, 1);
+        transform: scale(1.05);
+    }
+
+    .control-panel {
+        position: fixed;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        background-color: rgba(44, 62, 80, 0.4);
+        padding: 10px;
+        border-radius: 10px;
+        z-index: 999;
+        backdrop-filter: blur(10px);
+    }
+
+    .control-panel button {
+        transition: background-color 0.3s, transform 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(44, 62, 80, 0.4);
+        color: #ecf0f1;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .control-panel button i {
+        margin-right: 8px;
+        flex-shrink: 0;
+    }
+
+    .control-panel button:hover {
+        transform: scale(1.1);
+        background-color: rgba(44, 62, 80, 0.6);
+    }
+
+    .fab {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        background-color: #e74c3c;
+        color: white;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 6px 10px rgba(0,0,0,0.3);
+        cursor: pointer;
+        z-index: 1000;
+    }
+
+    .fab:hover {
+        background-color: #c0392b;
+    }
+
+    /* 新的 FAB 样式，定位在左上角，距离顶部 100px */
+    .fab-top-left {
+        position: fixed;
+        left: 20px;
+        top: 100px; /* 设置距离顶部 100px */
+        background-color: #3498db;
+        color: white;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 6px 10px rgba(0,0,0,0.3);
+        cursor: pointer;
+        z-index: 1000;
+    }
+
+    .fab-top-left:hover {
+        background-color: #2980b9;
+    }
+
+    .marker-shadow {
+        filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.5));
+    }
+
+    .marker-highlight {
+        animation: markerGrow 0.3s forwards;
+    }
+
+    .marker-normal {
+        animation: markerShrink 0.3s forwards;
+    }
+
+    @keyframes markerGrow {
+        from {
+            transform: scale(1);
+        }
+        to {
+            transform: scale(1.4);
+        }
+    }
+
+    @keyframes markerShrink {
+        from {
+            transform: scale(1.4);
+        }
+        to {
+            transform: scale(1);
+        }
+    }
+
+    .toast {
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px 20px;
+        background-color: rgba(255, 255, 255, 0.7);
+        color: #000000;
+        border-radius: 5px;
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+        backdrop-filter: blur(10px);
+    }
+
+    .toast-show {
+        opacity: 1;
+    }
+
+    /* 模态框的遮罩层，覆盖整个屏幕 */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5); /* 半透明背景 */
+    }
+
+    .modal.show {
+        display: block;
+    }
+
+    /* 模态框内容，定位在左上角 */
+    .modal-content {
+        position: absolute;
+        left: 20px;
+        top: 100px; /* 与 FAB 对齐 */
+        width: calc(33.33% - 40px); /* 宽度占屏幕的 1/3 */
+        height: calc(100% - 140px); /* 考虑顶部和底部的间距 */
+        background-color: #fefefe;
+        padding: 20px;
+        border: 1px solid #888;
+        border-radius: 10px;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    .close {
+        color: #aaa;
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+    }
 </style>
 {% endblock stylesheets %}
 
 {% block content %}
 <div class="content">
     <div id="mapContainer"></div>
+
+    <!-- 左上角的 FAB -->
+<!-- 左上角的 FAB 使用 SVG 图标 -->
+<div class="fab-top-left">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-robot" viewBox="0 0 16 16">
+        <path d="M2 7a1 1 0 0 1 1-1h1V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2h1a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-1v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2H3a1 1 0 0 1-1-1V7zm2-1h6v1H4V6zm1 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm4 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+    </svg>
+</div>
+
+    <!-- 模态框 -->
+    <div id="customerServiceModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <!-- 在这里嵌入其他网页 -->
+            <iframe src="http://127.0.0.1:5000" width="100%" height="100%" style="border:none;"></iframe>
+        </div>
+    </div>
+
+    <!-- 初始状态下，card-container 不显示 -->
     <div class="card-container">
         <div class="card-info">
             <h3>区域信息</h3>
@@ -163,73 +281,97 @@
         <!-- 控制面板按钮 -->
     </div>
     <div id="toast" class="toast">更新位置:</div>
+    <!-- 右下角的 FAB -->
+    <div class="fab">
+        <i class="fas fa-exclamation-triangle"></i>
+    </div>
 </div>
 {% endblock content %}
 
-<!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=你的高德地图API密钥"></script>
 <script type="text/javascript">
     var map = new AMap.Map('mapContainer', {
         resizeEnable: true,
-        center: [119.24547, 32.26518], // 地图中心点
-        zoom: 18, // 地图缩放级别
-        mapStyle: 'amap://styles/dark' // 深色主题样式
+        center: [119.24547, 32.26518],
+        zoom: 18,
+        mapStyle: 'amap://styles/dark'
     });
 
-    // 设置默认显示为卫星地图
     map.setLayers([
         new AMap.TileLayer.Satellite()
     ]);
 
-    // 无人机图标
     var defaultIcon = new AMap.Icon({
-        size: new AMap.Size(70, 70), // 默认图标大小
-        image: '{% static "assets/img/drone_pin.png" %}', // 图标的URL
-        imageSize: new AMap.Size(70, 70) // 图标实际大小
+        size: new AMap.Size(70, 70),
+        image: '{% static "assets/img/drone_pin.png" %}',
+        imageSize: new AMap.Size(70, 70)
     });
 
-    // 火焰图标
     var highlightIcon = new AMap.Icon({
-        size: new AMap.Size(70, 70), // 高亮图标大小
-        image: '{% static "assets/img/fire.png" %}', // 图标的URL
-        imageSize: new AMap.Size(70, 70) // 图标实际大小
+        size: new AMap.Size(70, 70),
+        image: '{% static "assets/img/fire.png" %}',
+        imageSize: new AMap.Size(70, 70)
     });
-
 
     {% for drone in drones %}
-        var marker1 = new AMap.Marker({
+        var marker{{ forloop.counter }} = new AMap.Marker({
             position: new AMap.LngLat({{ drone.longitude }}, {{ drone.latitude }}),
             icon: defaultIcon,
             anchor: 'bottom-center',
             draggable: true
         });
-        map.add(marker1);
+        map.add(marker{{ forloop.counter }});
     {% endfor %}
 
-    // 添加火点标记
     {% for point in fire_points %}
-        var fireMarker = new AMap.Marker({
+        var fireMarker{{ forloop.counter }} = new AMap.Marker({
             position: new AMap.LngLat({{ point.1 }}, {{ point.0 }}),
             icon: highlightIcon,
             anchor: 'bottom-center'
         });
-        map.add(fireMarker);
+        map.add(fireMarker{{ forloop.counter }});
     {% endfor %}
 
+    function showToast(message) {
+        var toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.add('toast-show');
+        setTimeout(function () {
+            toast.classList.remove('toast-show');
+        }, 3000);
+    }
 
+    // FAB 点击事件，切换卡片容器的显示状态
+    document.querySelector('.fab').addEventListener('click', function() {
+        document.querySelector('.card-container').classList.toggle('visible');
+    });
 
-// 显示 toast
-function showToast(message) {
-    var toast = document.getElementById('toast');
-    toast.textContent = message;
-    toast.classList.add('toast-show');
-    setTimeout(function () {
-        toast.classList.remove('toast-show');
-    }, 3000); // 3秒后隐藏
-}
+    // 获取模态框和模态框内容
+    var modal = document.getElementById("customerServiceModal");
+    var modalContent = document.querySelector(".modal-content");
 
+    // 获取打开模态框的 FAB
+    var fabTopLeft = document.querySelector('.fab-top-left');
 
+    // 获取关闭模态框的 <span> 元素
+    var spanClose = document.querySelector('.modal .close');
 
+    // 点击 FAB 时，显示模态框
+    fabTopLeft.addEventListener('click', function() {
+        modal.classList.add("show");
+    });
+
+    // 点击关闭按钮时，隐藏模态框
+    spanClose.addEventListener('click', function() {
+        modal.classList.remove("show");
+    });
+
+    // 点击遮罩层时，隐藏模态框
+    modal.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            modal.classList.remove("show");
+        }
+    });
 </script>
 {% endblock javascripts %}

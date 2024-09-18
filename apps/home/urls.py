@@ -44,5 +44,18 @@ urlpatterns = [
     path('stream/', views.stream_page, name='stream_page'),
     # Matches any html file
     # re_path(r'^.*\.*', views.pages, name='pages'),
+    path('template/', views.templates, name='template'),
+
+
+    path('ai_vision/ai_service/', views.ai_service, name='ai_service'),
+    path('ai_vision/third_party_api/', views.third_party_api, name='third_party_api'),
+    path('drone_manage/buy_drones/', views.buy_drones, name='buy_drones'),
+    path('drone_manage/rent_drones/', views.rent_drones, name='rent_drones'),
+    path('share_service/inspection_service/', views.inspection_service, name='inspection_service'),
+    path('share_service/photography/', views.photography, name='photography'),
+    path('share_service/yizheng/', views.yizheng, name='yizheng'),
+    path('share_service/government/', views.government, name='government'),
+    path('order/', views.order, name='order'),
+    path('share_service/photovoltaics/', views.photovoltaics, name='photovoltaics'),
 
 ]

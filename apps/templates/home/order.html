@@ -1,0 +1,298 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}订单页面{% endblock %}
+
+{% block stylesheets %}
+<style>
+  /* 设置视频背景样式 */
+  .video-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -2;
+    object-fit: cover;
+    filter: brightness(0.7); /* 调整视频亮度以提高内容可读性 */
+  }
+
+  /* 半透明遮罩层 */
+  .video-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4); /* 黑色半透明遮罩 */
+    z-index: -1;
+  }
+
+  /* 内容覆盖层 */
+  .content-overlay {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    align-items: flex-start; /* 垂直顶部对齐 */
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 0; /* 移除默认内边距 */
+    width: 100%; /* 页面宽度设为 100% */
+  }
+
+  /* 卡片样式 */
+  .main-card {
+    width: 66.6667%; /* 2/3 的宽度 */
+    height: 100vh; /* 高度为屏幕高度减去 100px */
+    background: #000; /* 黑色背景 */
+    padding: 20px;
+    box-sizing: border-box;
+    color: #fff; /* 白色文本 */
+    overflow-y: auto; /* 内容溢出时出现滚动条 */
+    /* 移除圆角和阴影 */
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    margin-top: 50px; /* 卡片距离顶部 100px */
+  }
+
+  /* 响应式调整 */
+  @media (max-width: 768px) {
+    .main-card {
+      width: 90%;
+      height: auto; /* 高度自适应 */
+      max-height: calc(100vh - 100px);
+      margin-top: 100px; /* 保持顶部间距 */
+    }
+  }
+
+  /* 卡片标题样式 */
+  .main-card .card-title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  /* 示例内容样式 */
+  .main-card .card-content p,
+  .main-card .card-content ul {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #fff; /* 确保文本为白色 */
+  }
+
+  /* 自定义滚动条样式（可选） */
+  .main-card::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .main-card::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .main-card::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+  }
+  /* 视频背景、遮罩层和内容覆盖层样式同之前的模板 */
+  /* ...（这里省略前面的样式以节省空间，请保留你的原有样式）... */
+
+  /* 订单页面样式 */
+  .order-section {
+    margin-bottom: 30px;
+  }
+
+  .order-section h3 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #fff;
+  }
+
+  .service-options label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    color: #fff;
+  }
+
+  .range-input input {
+    width: 100%;
+    padding: 8px;
+    font-size: 1rem;
+  }
+
+  .payment-options label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    color: #fff;
+  }
+
+  .summary {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #fff;
+    color: #fff;
+  }
+
+  .summary p {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+
+  .btn-submit {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+    width: 100%;
+  }
+
+  .btn-submit:hover {
+    background-color: #0056b3;
+  }
+
+  /* 响应式调整 */
+  @media (max-width: 768px) {
+    .main-card {
+      width: 90%;
+      margin-top: 50px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+  <!-- 背景视频、遮罩层和内容覆盖层同之前的模板 -->
+  <!-- 背景视频 -->
+  <video autoplay muted loop class="video-background">
+    <source src="{% static 'assets/img/bgv.mp4' %}" type="video/mp4">
+    您的浏览器不支持 HTML5 视频。
+  </video>
+
+  <!-- 半透明遮罩层 -->
+  <div class="video-overlay"></div>
+
+  <!-- 内容覆盖层 -->
+  <div class="content-overlay">
+    <div class="main-card">
+      <h2 class="card-title">订单页面</h2>
+      <div class="card-content">
+        <!-- 第一部分：选择服务内容 -->
+        <div class="order-section">
+          <h3>选择服务内容</h3>
+          <div class="service-options">
+            <label><input type="checkbox" value="Fire Detection"> 火点检测</label>
+            <label><input type="checkbox" value="Water Meter Detection"> 水表检测</label>
+            <label><input type="checkbox" value="Illegal Construction Detection"> 违建检测</label>
+            <label><input type="checkbox" value="Traffic Congestion"> 交通拥堵</label>
+            <label><input type="checkbox" value="Crowd Gathering"> 人员聚集</label>
+          </div>
+        </div>
+
+        <!-- 第二部分：选择范围 -->
+        <div class="order-section">
+          <h3>选择范围（平方公里）</h3>
+          <div class="range-input">
+            <input type="number" id="range" min="1" value="1">
+          </div>
+        </div>
+
+        <!-- 第三部分：选择付款方式 -->
+        <div class="order-section">
+          <h3>选择付款方式</h3>
+          <div class="payment-options">
+            <label><input type="radio" name="payment-duration" value="1" checked> 1 个月（无折扣）</label>
+            <label><input type="radio" name="payment-duration" value="2"> 2 个月（95 折）</label>
+            <label><input type="radio" name="payment-duration" value="6"> 6 个月（9 折）</label>
+            <label><input type="radio" name="payment-duration" value="12"> 1 年（85 折）</label>
+            <label><input type="radio" name="payment-duration" value="24"> 2 年（8 折）</label>
+            <label><input type="radio" name="payment-duration" value="36"> 3 年（75 折）</label>
+            <label><input type="radio" name="payment-duration" value="48"> 4 年（7 折）</label>
+            <label><input type="radio" name="payment-duration" value="60"> 5 年（65 折）</label>
+          </div>
+        </div>
+
+        <!-- 价格总结 -->
+        <div class="summary">
+          <h3>订单总结</h3>
+          <p>服务费用：<span id="service-cost">0</span> 元/月</p>
+          <p>总费用：<span id="total-cost">0</span> 元</p>
+          <button class="btn-submit">提交订单</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 价格计算的脚本 -->
+  <script>
+    // 定价参数
+    const firstServicePrice = 5000; // 第一个服务价格
+    const additionalServicePrice = 1000; // 额外服务价格
+    const discounts = {
+      1: 1.0,
+      2: 0.95,
+      6: 0.9,
+      12: 0.85,
+      24: 0.8,
+      36: 0.75,
+      48: 0.7,
+      60: 0.65,
+    };
+
+    // 获取页面元素
+    const serviceCheckboxes = document.querySelectorAll('.service-options input[type="checkbox"]');
+    const rangeInput = document.getElementById('range');
+    const paymentOptions = document.querySelectorAll('.payment-options input[type="radio"]');
+    const serviceCostElement = document.getElementById('service-cost');
+    const totalCostElement = document.getElementById('total-cost');
+
+    // 计算价格的函数
+    function calculatePrice() {
+      // 计算选中的服务数量
+      const selectedServices = Array.from(serviceCheckboxes).filter(checkbox => checkbox.checked);
+      let serviceCost = 0;
+
+      if (selectedServices.length > 0) {
+        serviceCost += firstServicePrice; // 第一个服务价格
+        serviceCost += (selectedServices.length - 1) * additionalServicePrice; // 额外服务价格
+      }
+
+      // 获取范围系数
+      const range = parseFloat(rangeInput.value) || 1;
+
+      // 获取付款时长和对应的折扣
+      const selectedDuration = parseInt(document.querySelector('.payment-options input[type="radio"]:checked').value);
+      const discount = discounts[selectedDuration];
+
+      // 计算总费用
+      const monthlyCost = serviceCost * range;
+      const totalCost = monthlyCost * selectedDuration * discount;
+
+      // 更新页面显示
+      serviceCostElement.textContent = monthlyCost.toFixed(2);
+      totalCostElement.textContent = totalCost.toFixed(2);
+    }
+
+    // 添加事件监听
+    serviceCheckboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', calculatePrice);
+    });
+
+    rangeInput.addEventListener('input', calculatePrice);
+
+    paymentOptions.forEach(radio => {
+      radio.addEventListener('change', calculatePrice);
+    });
+
+    // 初始计算
+    calculatePrice();
+  </script>
+{% endblock %}

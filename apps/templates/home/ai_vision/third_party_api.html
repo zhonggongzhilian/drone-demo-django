@@ -1,0 +1,318 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}第三方接入{% endblock %}
+
+{% block stylesheets %}
+<style>
+    /* 设置视频背景样式 */
+  .video-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -2;
+    object-fit: cover;
+    filter: brightness(0.7); /* 调整视频亮度以提高内容可读性 */
+  }
+
+  /* 半透明遮罩层 */
+  .video-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4); /* 黑色半透明遮罩 */
+    z-index: -1;
+  }
+
+  /* 内容覆盖层 */
+  .content-overlay {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    align-items: flex-start; /* 垂直顶部对齐 */
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 0; /* 移除默认内边距 */
+    width: 100%; /* 页面宽度设为 100% */
+  }
+
+  /* 卡片样式 */
+  .main-card {
+    width: 66.6667%; /* 2/3 的宽度 */
+    height: 100vh; /* 高度为屏幕高度减去 100px */
+    background: #000; /* 黑色背景 */
+    padding: 20px;
+    box-sizing: border-box;
+    color: #fff; /* 白色文本 */
+    overflow-y: auto; /* 内容溢出时出现滚动条 */
+    /* 移除圆角和阴影 */
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    margin-top: 50px; /* 卡片距离顶部 100px */
+  }
+
+  /* 响应式调整 */
+  @media (max-width: 768px) {
+    .main-card {
+      width: 90%;
+      height: auto; /* 高度自适应 */
+      max-height: calc(100vh - 100px);
+      margin-top: 100px; /* 保持顶部间距 */
+    }
+  }
+
+  /* 卡片标题样式 */
+  .main-card .card-title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  /* 示例内容样式 */
+  .main-card .card-content p,
+  .main-card .card-content ul {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #fff; /* 确保文本为白色 */
+  }
+
+  /* 自定义滚动条样式（可选） */
+  .main-card::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .main-card::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .main-card::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+  }
+
+  /* 分隔线样式 */
+  .section-separator {
+    border-bottom: 1px solid #444; /* 分隔线颜色 */
+    padding-bottom: 40px; /* 分隔线下方间距 */
+    margin-bottom: 40px; /* 分隔线上方间距 */
+  }
+
+  /* 代码块样式 */
+  .code-block {
+    background: #1e1e1e;
+    color: #dcdcdc;
+    padding: 15px;
+    border-radius: 5px;
+    font-family: Consolas, "Courier New", monospace;
+    overflow-x: auto;
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+
+  /* 表单样式 */
+  .integration-form {
+    background: #1a1a1a;
+    padding: 20px;
+    border-radius: 8px;
+    color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  }
+
+  .integration-form label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+
+  .integration-form input[type="text"],
+  .integration-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+
+  .integration-form button {
+    background: #28a745;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+
+  .integration-form button:hover {
+    background: #218838;
+  }
+
+  /* 响应式调整 */
+  @media (max-width: 768px) {
+    .integration-form {
+      width: 90%;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+  <!-- 背景视频 -->
+  <video autoplay muted loop class="video-background">
+    <source src="{% static 'assets/img/bgv.mp4' %}" type="video/mp4">
+    您的浏览器不支持 HTML5 视频。
+  </video>
+
+  <!-- 半透明遮罩层 -->
+  <div class="video-overlay"></div>
+
+  <!-- 内容覆盖层 -->
+  <div class="content-overlay">
+    <div class="main-card">
+      <h2 class="card-title">第三方接入</h2>
+      <div class="card-content">
+        <!-- 接入服务说明 -->
+        <section class="section-separator">
+          <h3>接入您的服务</h3>
+          <p>我们支持通过 RESTful 接口或 WebSocket 接口将您的服务接入我们的平台。无论您选择哪种方式，都可以轻松集成并享受我们的 AI 视觉分析能力。</p>
+        </section>
+
+        <!-- RESTful 接口示例和说明 -->
+        <section class="section-separator">
+          <h3>RESTful 接口接入</h3>
+          <p>通过 RESTful 接口，您可以使用标准的 HTTP 请求与我们的服务进行交互。以下是一个示例：</p>
+          <div class="code-block">
+            <pre>
+POST /api/analyze
+Content-Type: application/json
+
+{
+  "image_url": "https://example.com/image.jpg",
+  "callback_url": "https://yourdomain.com/callback"
+}
+            </pre>
+          </div>
+          <p>**说明**：</p>
+          <ul>
+            <li><strong>POST /api/analyze</strong>：发送分析请求的端点。</li>
+            <li><strong>image_url</strong>：要分析的图片或视频的 URL。</li>
+            <li><strong>callback_url</strong>：分析完成后，结果将发送到您的回调 URL。</li>
+          </ul>
+        </section>
+
+        <!-- WebSocket 接口示例和说明 -->
+        <section class="section-separator">
+          <h3>WebSocket 接口接入</h3>
+          <p>通过 WebSocket 接口，您可以实现实时的数据传输和分析。以下是一个示例：</p>
+          <div class="code-block">
+            <pre>
+// 建立 WebSocket 连接
+const socket = new WebSocket('wss://yourdomain.com/ws/analyze/');
+
+// 连接成功后发送数据
+socket.onopen = () => {
+  socket.send(JSON.stringify({
+    "image_data": "<base64_encoded_image>",
+    "session_id": "unique_session_id"
+  }));
+};
+
+// 接收服务器发送的分析结果
+socket.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  console.log('分析结果:', data);
+};
+
+// 处理连接关闭
+socket.onclose = () => {
+  console.log('WebSocket 连接已关闭');
+};
+            </pre>
+          </div>
+          <p>**说明**：</p>
+          <ul>
+            <li><strong>WebSocket 连接</strong>：使用 `wss://` 协议建立安全的 WebSocket 连接。</li>
+            <li><strong>image_data</strong>：要分析的图片或视频的 Base64 编码数据。</li>
+            <li><strong>session_id</strong>：用于标识会话的唯一 ID。</li>
+            <li><strong>onmessage</strong>：接收服务器发送的分析结果。</li>
+          </ul>
+        </section>
+
+        <!-- 用户接入自己的接口 -->
+        <section class="section-separator">
+          <h3>接入您的接口</h3>
+          <p>请根据您的需求选择 RESTful 或 WebSocket 接口，并填写相关信息以完成接入。</p>
+          
+          <div class="integration-form">
+            <form method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+              
+              <!-- 选择接口类型 -->
+              <label for="interface-type">接口类型</label>
+              <select id="interface-type" name="interface_type" required>
+                <option value="" disabled selected>请选择接口类型</option>
+                <option value="restful">RESTful 接口</option>
+                <option value="websocket">WebSocket 接口</option>
+              </select>
+              
+              <!-- RESTful 接口字段 -->
+              <div id="restful-fields" style="display: none;">
+                <label for="restful-endpoint">RESTful 接口端点</label>
+                <input type="text" id="restful-endpoint" name="restful_endpoint" placeholder="https://yourdomain.com/api/analyze">
+                
+                <label for="callback-url">回调 URL</label>
+                <input type="text" id="callback-url" name="callback_url" placeholder="https://yourdomain.com/callback">
+              </div>
+              
+              <!-- WebSocket 接口字段 -->
+              <div id="websocket-fields" style="display: none;">
+                <label for="websocket-url">WebSocket 接口 URL</label>
+                <input type="text" id="websocket-url" name="websocket_url" placeholder="wss://yourdomain.com/ws/analyze/">
+                
+                <label for="session-id">会话 ID</label>
+                <input type="text" id="session-id" name="session_id" placeholder="unique_session_id">
+              </div>
+              
+              <!-- 公共字段 -->
+              <label for="additional-info">附加信息</label>
+              <textarea id="additional-info" name="additional_info" rows="4" placeholder="填写任何附加信息..."></textarea>
+              
+              <button type="submit">提交接入</button>
+            </form>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- 添加 JavaScript 来处理表单显示 -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const interfaceTypeSelect = document.getElementById('interface-type');
+      const restfulFields = document.getElementById('restful-fields');
+      const websocketFields = document.getElementById('websocket-fields');
+
+      interfaceTypeSelect.addEventListener('change', function() {
+        if (this.value === 'restful') {
+          restfulFields.style.display = 'block';
+          websocketFields.style.display = 'none';
+        } else if (this.value === 'websocket') {
+          restfulFields.style.display = 'none';
+          websocketFields.style.display = 'block';
+        } else {
+          restfulFields.style.display = 'none';
+          websocketFields.style.display = 'none';
+        }
+      });
+    });
+  </script>
+{% endblock %}
